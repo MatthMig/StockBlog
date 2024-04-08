@@ -1,7 +1,8 @@
 ---
-title: Projet React 
+title: StockBlog 
 author:  
-- A compléter avec vos noms
+- MIGNE Matthieu
+- SORIA-RAMOS Gabriel
 --- 
 
 ## Cahier des charges
@@ -10,30 +11,36 @@ Ici vous décrivez les fonctionnalités souhaitées et celles effectivement mise
 
 ### Cas d'usage
 
-A modifier/compléter 
-
 ```plantuml
 @startuml
 left to right direction
 actor "Visitor" as v
-actor "Registered User" as u
+actor "Connected User" as cu
 actor "Admin" as a
-u <-- a
-rectangle Application {
+rectangle StockBlog {
   usecase "Register" as R
-  usecase "Connect" as C
-  usecase "Create a Group" as CG
-  usecase "Add user in one of my groups" as AU
-  usecase "Delete user in one of my groups" as AU
-  usecase "Delete a Group" as DG
-  usecase "Change role" as CR
+  usecase "Connect" as CN
+  usecase "Browse website views" as BWV
+  usecase "Comment" as CM
+  usecase "Vote" as V
+  usecase "Delete his account" as DHA
+  usecase "Delete his comments" as DHC
+  usecase "Disconnect" as D
+  usecase "Delete any account" as DAA
+  usecase "Delete any comment" as DAC
 }
-a --> DG
-a --> CR
 v --> R
-u --> C
-u --> AU
-u --> CG
+v --> CN
+v --> BWV
+cu --> BWV
+cu --> CM
+cu --> V
+cu --> DHA
+cu --> DHC
+cu --> D
+a --> DAA
+a --> DAC
+a --> cu
 @enduml
 ```
 
