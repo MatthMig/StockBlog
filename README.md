@@ -7,7 +7,12 @@ author:
 
 ## Cahier des charges
 
-Nous souhaitons créer un site affichant les courbes de différents actifs bousiers et qui donne la possibilité aux utilisateurs d'interagir à leur sujet en commentant, ou en pariant sur une montée ou une descente de la valeur de l'actif à la prochaine unité de temps. Seul les utilisateurs connectés peuvent commenter et voter.
+Nous souhaitons créer un site affichant les courbes de différents actifs bousiers et qui donne la possibilité aux utilisateurs d'interagir à leur sujet en commentant, ou en pariant sur une montée ou une descente de la valeur de l'actif à la prochaine unité de temps. Seul les utilisateurs connectés peuvent commenter et voter. 
+
+Le site comportera 3 vues principales: 
+- la page d'accueil qui montrent quelques informations sur plusieurs actifs et donne la possibilité d'accéder aux paramètres de son compte
+- la page d'un actif montrant un graphique, ses votes et ses commentaires
+- la page de ses paramètres de compte
 
 ### Cas d'usage
 
