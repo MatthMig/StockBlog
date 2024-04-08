@@ -7,7 +7,7 @@ author:
 
 ## Cahier des charges
 
-Ici vous décrivez les fonctionnalités souhaitées et celles effectivement mises en oeuvre. Avec un diagramme UML des cas d'usage et des maquettes des vues souhaitées et des captures d'écran de ce qui a été réalisé.
+Nous souhaitons créer un site affichant les courbes de différents actifs bousiers et qui donne la possibilité aux utilisateurs d'interagir à leur sujet en commentant, ou en pariant sur une montée ou une descente de la valeur de l'actif à la prochaine unité de temps. Seul les utilisateurs connectés peuvent commenter et voter.
 
 ### Cas d'usage
 
@@ -106,29 +106,32 @@ Indiquer ici l'organisation de votre code. Et les choix faits pour le frontend.
 
 #### Schéma de votre base de donnée
 
-A modifier/compléter...
-
 ```plantuml
 class User{
   name
   email
   passhash
   isAdmin : boolean
+  points
 }
 
-class Message{
+class Comments {
   content
 }
 
-class Group{
-  name
+class Votes{
+  upVotes
+  downVotes
 }
 
-User "1" -- "n" Message : posts
-Group "1" -- "n" Message : contains
+class StockCurve{
+  id
+}
 
-User "n" -- "n"  Group : is member 
-User "1" -- "n"  Group : create and own
+StockCurve "1" -- "n" Comments
+StockCurve "1" -- "1" Votes
+Votes "n" <-- "n" User : votes
+User "1" --> "n" Comments : posts
 ```
 
 #### Architecture de votre code
