@@ -1,11 +1,17 @@
-import React from 'react';
-import StockPrice from './StockPrice'; // Assuming you have this component in a separate file
+import React from "react";
+import { Route, BrowserRouter as Router, Routes } from "react-router-dom";
+import HomePage from "./pages/HomePage";
+import NoPage from "./pages/NoPage";
 
 function App() {
   return (
     <div className="app">
-      <h1>Stock Market Price</h1>
-      <StockPrice />
+      <Router>
+        <Routes>
+          <Route path="/" element={<HomePage />} />
+          <Route path="*" element={<NoPage />} />
+        </Routes>
+      </Router>
     </div>
   );
 }
