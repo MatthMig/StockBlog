@@ -2,6 +2,7 @@ import React from "react";
 import { Route, BrowserRouter as Router, Routes } from "react-router-dom";
 import HomePage from "./pages/HomePage";
 import NoPage from "./pages/NoPage";
+import NoStock from "./pages/NoStock";
 
 function App() {
   return (
@@ -10,6 +11,7 @@ function App() {
         <Routes>
           <Route path="/" element={<HomePage />} />
           <Route path="*" element={<NoPage />} />
+          <Route path="/no-stock" element={<NoStock />} />
         </Routes>
       </Router>
     </div>
