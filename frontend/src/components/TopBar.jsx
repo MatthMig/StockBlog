@@ -4,11 +4,12 @@ import ConnectionSettingsButton from './ConnectionSettingsButton';
 
 const TopBar = ({ isLoggedIn, onLogin, onSignUp, onUserSettings }) => {
     return (
-        <Navbar bg="light" expand="lg" variant="light" className="scrolled">
-            <Navbar.Brand href="#home" className="logo">StockBlog</Navbar.Brand>
+        <Navbar bg="light" expand="lg" variant="light" className={`navbar custom-navbar fixed-top navbar-expand-lg`}>
+            <Navbar.Brand href="#home" className="navbar-brand">StockBlog</Navbar.Brand>
+            <Navbar.Toggle aria-controls="basic-navbar-nav" />
             <Navbar.Collapse id="basic-navbar-nav">
-                <Nav className="ml-auto">
-                    <ConnectionSettingsButton 
+                <Nav className="ml-auto right-align">
+                    <ConnectionSettingsButton
                         isLoggedIn={isLoggedIn}
                         onLogin={onLogin}
                         onSignUp={onSignUp}
