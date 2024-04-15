@@ -1,6 +1,5 @@
 import React from 'react';
 import { Nav, Navbar } from 'react-bootstrap';
-import '../css/TopBar.css';
 import ConnectionSettingsButton from './ConnectionSettingsButton';
 
 const TopBar = ({ isLoggedIn, onLogin, onSignUp, onUserSettings }) => {

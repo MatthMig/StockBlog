@@ -19,7 +19,7 @@ const SearchBar = () => {
     }
 
     return (
-        <div>
+        <div className="fixed-top">
             <input
                 type="search"
                 placeholder="Search here"
