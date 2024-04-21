@@ -19,7 +19,7 @@ const SearchBar = () => {
     }
 
     return (
-        <div className="">
+        <div className="full-width">
             <input
                 type="search"
                 placeholder="Search here"
