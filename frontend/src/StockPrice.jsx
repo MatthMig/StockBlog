@@ -1,37 +1,55 @@
 import React, { useEffect, useState } from 'react';
+import StockChart from './components/StockChart';
+import { fetchData } from './components/api';
 
 function StockPrice() {
-  const [stockPrice, setStockPrice] = useState(null);
+  const [stockData, setStockData] = useState([]);
   const [error, setError] = useState(null);
 
+  const ALPACA_KEY_ID = import.meta.env.VITE_ALPACA_KEY_ID;
+  const ALPACA_SECRET_KEY = import.meta.env.VITE_ALPACA_SECRET_KEY;
+  const symbol = 'AAPL';
+
+  const startDate = new Date();
+  startDate.setMonth(startDate.getMonth() - 5);
+  const start = startDate.toISOString();
+
+  const endDate = new Date();
+  endDate.setMinutes(endDate.getMinutes() - 16);
+  const end = endDate.toISOString();
+
+  const timeframe = '1M';
+
   useEffect(() => {
-    const fetchData = async () => {
+    const fetchDataFromAPI = async () => {
       try {
-        const options = {
-          method: 'GET',
-          headers: {
-            accept: 'application/json',
-            'APCA-API-KEY-ID': 'YOUR_API_KEY_ID',
-            'APCA-API-SECRET-KEY': 'YOUR_API_SECRET_KEY'
-          }
-        };
-        
-        const response = await fetch('https://data.alpaca.markets/v2/stocks/quotes?symbols=AAPL%2CTSLA&start=2024-01-03T00%3A00%3A00Z&end=2024-01-04T09%3A30%3A00-04%3A00&limit=3&feed=iex&sort=asc', options);
-        const data = await response.json();
-        setStockPrice(data.quotes.AAPL['0'].bp);        
+        const data = await fetchData(symbol, start, end, timeframe, ALPACA_KEY_ID, ALPACA_SECRET_KEY);
+        setStockData(data);
       } catch (error) {
         setError(error.message);
       }
     };
 
-    fetchData();
+    fetchDataFromAPI();
   }, []);
+
+  const title = `${symbol}'s line chart`;
+
+  let tValues = [];
+  let cValues = [];
+  if(stockData && stockData.hasOwnProperty("bars")) {
+    tValues = stockData.bars.map(bar => bar.t);
+    cValues = stockData.bars.map(bar => bar.c);
+  }
 
   return (
     <div className="stock-price">
       {error && <p>Error: {error}</p>}
-      {stockPrice && <p>Stock Price: ${stockPrice}</p>}
-      {!stockPrice && !error && <p>Loading...</p>}
+      <StockChart 
+        title={title}
+        timestamps={tValues}
+        prices={cValues}
+      />
     </div>
   );
 }

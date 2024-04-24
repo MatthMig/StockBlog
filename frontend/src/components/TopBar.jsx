@@ -1,13 +1,12 @@
 import React from 'react';
 import { Nav, Navbar } from 'react-bootstrap';
+import '../css/top_bar.css';
 import ConnectionSettingsButton from './ConnectionSettingsButton';
 
 const TopBar = ({ isLoggedIn, onLogin, onSignUp, onUserSettings }) => {
     return (
-        <Navbar bg="light" expand="lg" variant="light" className={`navbar custom-navbar fixed-top navbar-expand-lg`}>
+        <Navbar bg="light" variant="light" className={`navbar custom-navbar fixed-top`}>
             <Navbar.Brand href="#home" className="navbar-brand">StockBlog</Navbar.Brand>
-            <Navbar.Toggle aria-controls="basic-navbar-nav" />
-            <Navbar.Collapse id="basic-navbar-nav">
                 <Nav className="ml-auto right-align">
                     <ConnectionSettingsButton
                         isLoggedIn={isLoggedIn}
@@ -16,7 +15,6 @@ const TopBar = ({ isLoggedIn, onLogin, onSignUp, onUserSettings }) => {
                         onUserSettings={onUserSettings}
                     />
                 </Nav>
-            </Navbar.Collapse>
         </Navbar>
     );
 };
