@@ -1,48 +1,41 @@
 import React, { useState } from 'react';
+import Dropdown from 'react-bootstrap/Dropdown';
+import Form from 'react-bootstrap/Form';
 
-const SearchBar = () => {
+const SearchBar = ({ onSymbolSelect, symbolsData }) => {
     const [searchInput, setSearchInput] = useState("");
-    const data = [
-        { name: "Euro", value: "€" },
-        { name: "Dollar", value: "$" },
-        { name: "Pound", value: "£" },
-        { name: "Yen", value: "¥" },
-    ];
 
     const handleChange = (e) => {
         setSearchInput(e.target.value);
     };
 
-    let filteredData = data;
-    if (searchInput.length > 0) {
-        filteredData = data.filter((asset) => asset.name.includes(searchInput));
-    }
+    const handleItemClick = (name) => {
+        onSymbolSelect(name);
+    };
+
+    const lowerCaseSearchInput = searchInput.toLowerCase();
+    const filteredData = symbolsData.filter((asset) => asset.toLowerCase().includes(lowerCaseSearchInput));
 
     return (
-        <div className="full-width">
-            <input
-                type="search"
-                placeholder="Search here"
-                onChange={handleChange}
-                value={searchInput}
-            />
-            <table>
-                <thead>
-                    <tr>
-                        <th>Asset</th>
-                        <th>Value</th>
-                    </tr>
-                </thead>
-                <tbody>
+        <Dropdown>
+            <Dropdown.Toggle variant="light" id="dropdown-custom-components">
+                {searchInput ? `Filtered (${filteredData.length})` : 'Select a symbol'}
+            </Dropdown.Toggle>
+            <Dropdown.Menu show={true}>
+                <Form.Control
+                    autoFocus
+                    className="mx-3 my-2 w-auto"
+                    placeholder="Type to filter..."
+                    onChange={handleChange}
+                    value={searchInput}
+                />
+                <ul className="list-unstyled" style={{ maxHeight: '200px', overflowY: 'auto' }}>
                     {filteredData.map((asset, index) => (
-                        <tr key={index}>
-                            <td>{asset.name}</td>
-                            <td>{asset.value}</td>
-                        </tr>
+                        <Dropdown.Item key={index} onClick={() => handleItemClick(asset)}>{asset}</Dropdown.Item>
                     ))}
-                </tbody>
-            </table>
-        </div>
+                </ul>
+            </Dropdown.Menu>
+        </Dropdown>
     );
 };
 

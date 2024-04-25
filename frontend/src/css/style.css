@@ -1,9 +1,12 @@
-:root {
-  --primary-color: purple;
+html {
+  -webkit-font-smoothing: antialiased;
 }
 
-#root {
-    width: 100%;
+.app {
+  --primary-color: purple;
+  overflow-x: hidden;
+  padding-top: 56px;
+  min-height: 100vh;
 }
 
 .right-align {

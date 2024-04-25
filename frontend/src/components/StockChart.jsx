@@ -25,7 +25,6 @@ function StockChart({ title, timestamps, prices }) {
                 text: title,
             },
         },
-        maintainAspectRatio: false,
     };
 
     const labels = timestamps;
