@@ -9,8 +9,6 @@ export default function Chat({ onSymbolSelect, symbolsData }) {
 
     // Function to handle sending messages
     const sendMessage = () => {
-        // Add logic to send message
-        // For now, let's just add a dummy message to the state
         setMessages([...messages, { text: messageInput, user: "User" }]);
         // Clear the input field after sending the message
         setMessageInput('');
