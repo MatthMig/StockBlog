@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import SearchBar from "../components/SearchBar";
 import StockPrice from "../components/StockPrice";
 import TopBar from "../components/TopBar";
-import { fetchData_bars, fetchData_symbols } from '../components/api';
+import { fetchData_bars, fetchData_symbols } from '../components/alpaca_api';
 
 function HomePage() {
     const [symbolsData, setSymbolsData] = useState([]);
