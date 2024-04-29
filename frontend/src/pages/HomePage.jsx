@@ -59,7 +59,7 @@ function HomePage() {
                             {selectedSymbol && <StockPrice symbol={selectedSymbol} stockData={stockData} error={error} />}
                         </Col>
                         <Col xs={12} md={4}>
-                            <Chat onSymbolSelect={handleSymbolSelect} symbolsData={symbolsData} />
+                            <Chat symbol={selectedSymbol} />
                         </Col>
                     </Row>
                 </Container>

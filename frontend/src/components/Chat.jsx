@@ -1,27 +1,52 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Col, Row } from "react-bootstrap";
+import { fetchMessages, postMessage } from "./intern_api"; // Import your message fetching function
 
-export default function Chat({ onSymbolSelect, symbolsData }) {
+export default function Chat({ symbol }) {
     // State to hold the chat messages
     const [messages, setMessages] = useState([]);
     // State to hold the current message being typed
     const [messageInput, setMessageInput] = useState('');
 
-    // Function to handle sending messages
+    useEffect(() => {
+        if (symbol) {
+            updateMessages();
+        }
+    }, [symbol]); // Run this effect when the symbol changes
+
+    const updateMessages = () => {
+        fetchMessages(symbol)
+            .then(newMessages => {
+                setMessages(newMessages);
+            })
+            .catch(error => {
+                console.error("Error fetching messages:", error);
+            });
+    }
+
     const sendMessage = () => {
-        setMessages([...messages, { text: messageInput, user: "User" }]);
-        // Clear the input field after sending the message
-        setMessageInput('');
+        if (messageInput.trim() !== "") {
+            const newMessage = { text: messageInput, user: "You" };
+            // Update the messages state with the new message immediately
+            setMessages(prevMessages => [...prevMessages, newMessage]);
+            // Send the message to the server
+            postMessage(symbol, newMessage)
+                .then(() => {
+                    // Once the message is sent successfully, clear the input field
+                    setMessageInput('');
+                })
+                .catch(error => {
+                    console.error("Error posting message:", error);
+                });
+        }
     };
 
-    // Function to handle key press events in the input field
     const handleKeyPress = (e) => {
-        if (e.key === "Enter" && messageInput.trim() !== "") {
+        if (e.key === "Enter") {
             sendMessage();
         }
     };
 
-    // Function to handle changes in the input field
     const handleChange = (e) => {
         setMessageInput(e.target.value);
     };
