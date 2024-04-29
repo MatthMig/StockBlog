@@ -7,14 +7,16 @@ Currently, two official plugins are available:
 - [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
 - [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
 
-Instructions:
 
-run as dev:
+Setup npm:
+en réglant npm pour travailler dans /scratch/$USER :
 
+npm config set prefix /scratch/$USER/.npm
+npm config set cache  /scratch/$USER/.cache
+
+npm init # Vous pouvez prendre les valeurs par défaut
+npm install
 npm run dev
 
-run to build:
-
-npm run build
-
-
+# installer des nouvelles dependances
+npm install --save 

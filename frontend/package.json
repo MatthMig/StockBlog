@@ -11,6 +11,7 @@
   },
   "dependencies": {
     "@alpacahq/alpaca-trade-api": "^3.0.1",
+    "ajax": "^0.0.4",
     "bootstrap": "^5.3.3",
     "chart.js": "^4.4.2",
     "faker": "^5.5.3",
@@ -30,5 +31,9 @@
     "eslint-plugin-react-hooks": "^4.6.0",
     "eslint-plugin-react-refresh": "^0.4.6",
     "vite": "^5.2.0"
-  }
+  },
+  "description": "This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.",
+  "main": "vite.config.js",
+  "author": "",
+  "license": "ISC"
 }
