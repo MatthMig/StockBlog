@@ -1,4 +1,6 @@
 import React, { useEffect, useState } from 'react';
+import { Col, Container, Row } from 'react-bootstrap';
+import Chat from '../components/Chat';
 import SearchBar from "../components/SearchBar";
 import StockPrice from "../components/StockPrice";
 import TopBar from "../components/TopBar";
@@ -50,8 +52,17 @@ function HomePage() {
                 <TopBar />
             </header>
             <main>
-                <SearchBar onSymbolSelect={handleSymbolSelect} symbolsData={symbolsData} />
-                {selectedSymbol && <StockPrice symbol={selectedSymbol} stockData={stockData} error={error} />}
+                <Container fluid>
+                    <Row>
+                        <Col xs={12} md={8}>
+                            <SearchBar onSymbolSelect={handleSymbolSelect} symbolsData={symbolsData} />
+                            {selectedSymbol && <StockPrice symbol={selectedSymbol} stockData={stockData} error={error} />}
+                        </Col>
+                        <Col xs={12} md={4}>
+                            <Chat onSymbolSelect={handleSymbolSelect} symbolsData={symbolsData} />
+                        </Col>
+                    </Row>
+                </Container>
             </main>
         </>
     );

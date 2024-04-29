@@ -38,6 +38,5 @@ export async function fetchData_symbols(apiKeyID, apiSecretKey) {
         return symbols;
     } catch (error) {
         console.error('Error fetching symbols:', error);
-        throw error;
     }
 }
