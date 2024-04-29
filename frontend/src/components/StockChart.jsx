@@ -42,11 +42,12 @@ function StockChart({ title, timestamps, prices }) {
         ],
     };
 
-    return <Line 
-        options={options} 
-        data={data}
-        style={{width: "100%"}}
-    />;
+    return (
+        <Line
+            options={options}
+            data={data}
+        />
+    );
 }
 
 export default StockChart;

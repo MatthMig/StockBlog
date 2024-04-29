@@ -40,3 +40,8 @@ html {
 .chat-box .input-field {
   padding-left: 0;
 }
+
+canvas {
+  width: 100% !important;
+  height: auto !important;
+}
