@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Col, Row } from "react-bootstrap";
 import { fetchMessages, postMessage } from "./intern_api"; // Import your message fetching function
 
@@ -7,12 +7,19 @@ export default function Chat({ symbol }) {
     const [messages, setMessages] = useState([]);
     // State to hold the current message being typed
     const [messageInput, setMessageInput] = useState('');
+    // Ref for the chat window element
+    const chatWindowRef = useRef(null);
 
     useEffect(() => {
         if (symbol) {
             updateMessages();
         }
     }, [symbol]); // Run this effect when the symbol changes
+
+    useEffect(() => {
+        // Scroll to the bottom when the chat window or sidebar is displayed
+        scrollToBottom();
+    }, [messages]); // Run this effect when new messages are received
 
     const updateMessages = () => {
         fetchMessages(symbol)
@@ -51,10 +58,16 @@ export default function Chat({ symbol }) {
         setMessageInput(e.target.value);
     };
 
+    const scrollToBottom = () => {
+        if (chatWindowRef.current) {
+            chatWindowRef.current.scrollTop = chatWindowRef.current.scrollHeight;
+        }
+    };
+
     return (
         <Row className="chat-box">
             <h1>Chat</h1>
-            <div style={{ border: "1px solid #ccc", borderRadius: "5px", padding: "10px", height: "300px", overflowY: "auto" }}>
+            <div ref={chatWindowRef} style={{ border: "1px solid #ccc", borderRadius: "5px", padding: "10px", height: "300px", overflowY: "auto" }}>
                 {messages.map((message, index) => (
                     <div key={index}>
                         <strong>{message.user}:</strong> {message.text}
