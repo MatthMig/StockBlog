@@ -1,0 +1,11 @@
+{
+  "name": "stockblog_gabriel_soria_ramos_matthieu_migne",
+  "version": "1.0.0",
+  "description": "---\r title: StockBlog \r author:  \r - MIGNE Matthieu\r - SORIA-RAMOS Gabriel\r ---",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC"
+}
