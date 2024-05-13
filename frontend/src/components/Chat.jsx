@@ -34,10 +34,12 @@ export default function Chat({ symbol }) {
         if (messageInput.trim() !== "") {
             const newMessage = { text: messageInput, userMail: userMail };
             console.log("Sending message:", newMessage);
-            // Update the messages state with the new message immediately
-            setMessages(prevMessages => [...prevMessages, newMessage]);
             // Send the message to the server
             postMessage(symbol, newMessage)
+                .then(() => {
+                    // Update the messages state with the new message only if no error occurred
+                    setMessages(prevMessages => [...prevMessages, newMessage]);
+                })
                 .catch(error => {
                     console.error("Error posting message:", error);
                 })

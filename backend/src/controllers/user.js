@@ -43,7 +43,7 @@ module.exports = {
     // TODO : verify if the token is valid...
     // #swagger.tags = ['Users']
     // #swagger.summary = 'Get All users'
-    const data = await userModel.findAll({ attributes: ['id', 'name', 'email'] })
+    const data = await userModel.findAll({ attributes: ['name', 'email'] })
     res.json({ status: true, message: 'Returning users', data })
   },
   async updateUser (req, res) {
