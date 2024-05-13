@@ -15,6 +15,7 @@ ChartJS.register(
 function StockChart({ title, timestamps, prices }) {
     const options = {
         responsive: true,
+        maintainAspectRatio: true,
         plugins: {
             legend: {
                 position: 'top',
@@ -41,10 +42,12 @@ function StockChart({ title, timestamps, prices }) {
         ],
     };
 
-    return <Line 
-        options={options} 
-        data={data}
-    />;
+    return (
+        <Line
+            options={options}
+            data={data}
+        />
+    );
 }
 
 export default StockChart;

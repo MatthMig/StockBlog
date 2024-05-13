@@ -18,3 +18,30 @@ html {
   margin-right: auto;
   margin-left: auto;
 }
+
+.chat-box {
+  margin-left: 5px;
+  margin-right: 5px;
+}
+
+.chat-box .send-button {
+  padding-right: 0;
+  padding-left: 0;
+}
+
+.chat-box .bar {
+  margin-top: 5px;
+  padding-left: 0;
+  padding-right: 0;
+  margin-left: 0;
+  margin-right: 0;
+}
+
+.chat-box .input-field {
+  padding-left: 0;
+}
+
+canvas {
+  width: 100% !important;
+  height: auto !important;
+}

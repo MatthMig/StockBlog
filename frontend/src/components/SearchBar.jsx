@@ -12,9 +12,11 @@ const SearchBar = ({ onSymbolSelect, symbolsData }) => {
     const handleItemClick = (name) => {
         onSymbolSelect(name);
     };
-
+    
     const lowerCaseSearchInput = searchInput.toLowerCase();
-    const filteredData = symbolsData.filter((asset) => asset.toLowerCase().includes(lowerCaseSearchInput));
+    const filteredData = searchInput
+                            ? symbolsData.filter((asset) => asset.toLowerCase().includes(lowerCaseSearchInput))
+                            : symbolsData;
 
     return (
         <Dropdown>
@@ -30,9 +32,9 @@ const SearchBar = ({ onSymbolSelect, symbolsData }) => {
                     value={searchInput}
                 />
                 <ul className="list-unstyled" style={{ maxHeight: '200px', overflowY: 'auto' }}>
-                    {filteredData.map((asset, index) => (
-                        <Dropdown.Item key={index} onClick={() => handleItemClick(asset)}>{asset}</Dropdown.Item>
-                    ))}
+                {filteredData.map((asset, index) => (
+                    <Dropdown.Item key={index} onClick={() => handleItemClick(asset)}>{asset}</Dropdown.Item>
+                ))}
                 </ul>
             </Dropdown.Menu>
         </Dropdown>

@@ -1,13 +1,9 @@
 const Sequelize = require('sequelize')
 const db = require('./database.js')
 const users = db.define('users', {
-  id: {
-    primaryKey: true,
-    type: Sequelize.INTEGER,
-    autoIncrement: true
-  },
   name: {
     type: Sequelize.STRING(128),
+    unique:true,
     validate: {
       is: /^[a-z\-'\s]{1,128}$/i
     }
@@ -15,6 +11,7 @@ const users = db.define('users', {
   email: {
     type: Sequelize.STRING(128),
     unique: true,
+    primaryKey: true,
     validate: {
       isEmail: true
     }

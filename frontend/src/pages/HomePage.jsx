@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from 'react';
+import { Col, Container, Row } from 'react-bootstrap';
+import Chat from '../components/Chat';
 import SearchBar from "../components/SearchBar";
 import StockPrice from "../components/StockPrice";
 import TopBar from "../components/TopBar";
-import { fetchData_bars, fetchData_symbols } from '../components/alpaca_api';
 
 function HomePage() {
     const [symbolsData, setSymbolsData] = useState([]);
@@ -13,7 +14,8 @@ function HomePage() {
     useEffect(() => {
         const fetchDataFromAPI = async () => {
             try {
-                const data = await fetchData_symbols(import.meta.env.VITE_ALPACA_KEY_ID, import.meta.env.VITE_ALPACA_SECRET_KEY);
+                const response = await fetch('http://localhost:3000/alpaca/symbols');
+                const data = await response.json();
                 setSymbolsData(data);
             } catch (error) {
                 console.error('Error fetching symbols:', error);
@@ -36,7 +38,8 @@ function HomePage() {
 
             const timeframe = '1D';
 
-            const data = await fetchData_bars(symbol, start, end, timeframe, import.meta.env.VITE_ALPACA_KEY_ID, import.meta.env.VITE_ALPACA_SECRET_KEY);
+            const response = await fetch(`http://localhost:3000/alpaca/bars/${symbol}/${start}/${end}/${timeframe}`);
+            const data = await response.json();
             setStockData(data);
             setError(null);
         } catch (error) {
@@ -50,8 +53,17 @@ function HomePage() {
                 <TopBar />
             </header>
             <main>
-                <SearchBar onSymbolSelect={handleSymbolSelect} symbolsData={symbolsData} />
-                {selectedSymbol && <StockPrice symbol={selectedSymbol} stockData={stockData} error={error} />}
+                <Container fluid>
+                    <Row>
+                        <Col xs={12} md={8}>
+                            <SearchBar onSymbolSelect={handleSymbolSelect} symbolsData={symbolsData} />
+                            {selectedSymbol && <StockPrice symbol={selectedSymbol} stockData={stockData} error={error} />}
+                        </Col>
+                        <Col xs={12} md={4}>
+                            <Chat symbol={selectedSymbol} />
+                        </Col>
+                    </Row>
+                </Container>
             </main>
         </>
     );
