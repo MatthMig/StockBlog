@@ -22,7 +22,9 @@ export async function postMessage(symbol, message) {
         body: JSON.stringify(message),
     });
 
+    const responseData = await response.json();
+
     if (!response.ok) {
-        throw new Error("Network response was not ok");
+        throw new Error(responseData.error || "Network response was not ok");
     }
 }
