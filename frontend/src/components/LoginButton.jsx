@@ -1,16 +1,7 @@
 import React from 'react';
 import { Button } from 'react-bootstrap';
-import { useNavigate } from "react-router-dom"
 
-
-
-const ConnectionSettingsButton = ({ isLoggedIn, onSignUp, onUserSettings }) => {
-    const navigate = useNavigate()
-    function onLogin() {
-        navigate("/login");
-    }    
-    
-    
+const LoginButton = ({ isLoggedIn, onLogin, onSignUp, onUserSettings }) => {
     return (
             isLoggedIn ? (
                 <span onClick={onUserSettings}>User Settings</span>
