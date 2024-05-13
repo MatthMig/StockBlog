@@ -209,14 +209,16 @@
             "type": "string"
           },
           {
+            "name": "authorization",
+            "in": "header",
+            "type": "string"
+          },
+          {
             "name": "body",
             "in": "body",
             "schema": {
               "type": "object",
               "properties": {
-                "userMail": {
-                  "example": "any"
-                },
                 "text": {
                   "example": "any"
                 }
@@ -230,6 +232,12 @@
           },
           "400": {
             "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "402": {
+            "description": "Payment Required"
           },
           "500": {
             "description": "Internal Server Error"
@@ -279,6 +287,95 @@
         "responses": {
           "200": {
             "description": "OK"
+          }
+        }
+      }
+    },
+    "/auth/signup": {
+      "post": {
+        "tags": [
+          "Users"
+        ],
+        "summary": "New User",
+        "description": "",
+        "parameters": [
+          {
+            "name": "obj",
+            "in": "body",
+            "description": "Name and email",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "example": "John Doe"
+                },
+                "email": {
+                  "type": "string",
+                  "example": "John.Doe@acme.com"
+                },
+                "password": {
+                  "type": "string",
+                  "example": "1m02P@SsF0rt!"
+                }
+              },
+              "required": [
+                "name",
+                "email",
+                "password"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/auth/login": {
+      "post": {
+        "tags": [
+          "Users"
+        ],
+        "summary": "Verify credentials of user using email and password and return token",
+        "description": "",
+        "parameters": [
+          {
+            "name": "obj",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "email": {
+                  "type": "string",
+                  "example": "John.Doe@acme.com"
+                },
+                "password": {
+                  "type": "string",
+                  "example": "12345"
+                }
+              },
+              "required": [
+                "email",
+                "password"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "500": {
+            "description": "Internal Server Error"
           }
         }
       }

@@ -19,8 +19,8 @@ const app = express()
 
 // Create the database table
 Promise.all([
-  Message.sync({ force: true }),
-  User.sync({ force: true })
+  Message.sync(),
+  User.sync()
 ])
   .then(() => {
     console.log(`Database & tables created!`);
