@@ -23,6 +23,7 @@
   font-size: 18px;
   font-weight: bold;
   line-height: 40px;
+  padding-left: 20px;
 }
 
 .custom-navbar .navbar-nav.navbar-right li a {
@@ -83,4 +84,16 @@
 .basic-navbar-nav {
     margin-left: auto; 
     margin-right: 0;
+}
+
+.log-buttons {
+  margin-right: 10px;
+  margin-left: 10px;
+  display: flex;
+  gap: 10px;
+}
+
+.gear {
+  cursor: 'pointer';
+  margin-top: 10px;
 }

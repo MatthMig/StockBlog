@@ -7,9 +7,10 @@ import TopBar from "../components/TopBar";
 
 function HomePage() {
     const [symbolsData, setSymbolsData] = useState([]);
-    const [selectedSymbol, setSelectedSymbol] = useState(null);
+    const [selectedAsset, setSelectedAsset] = useState([]);
     const [stockData, setStockData] = useState([]);
     const [error, setError] = useState(null);
+    const [isLoading, setIsLoading] = useState(false);
 
     useEffect(() => {
         const fetchDataFromAPI = async () => {
@@ -25,8 +26,11 @@ function HomePage() {
         fetchDataFromAPI();
     }, []);
 
-    const handleSymbolSelect = async (symbol) => {
-        setSelectedSymbol(symbol);
+    const isLoggedIn = Boolean(localStorage.getItem('token'));
+
+    const handleAssetSelect = async (asset) => {
+        setSelectedAsset(asset);
+        setIsLoading(true);
         try {
             const startDate = new Date();
             startDate.setMonth(startDate.getMonth() - 5);
@@ -38,29 +42,33 @@ function HomePage() {
 
             const timeframe = '1D';
 
-            const response = await fetch(`http://localhost:3000/alpaca/bars/${symbol}/${start}/${end}/${timeframe}`);
-            const data = await response.json();
+            const response = await fetch(`http://localhost:3000/alpaca/bars/${asset.class}/${asset.symbol}/${start}/${end}/${timeframe}`);
+            let data = await response.json();
+            if (typeof data.bars === 'object' && data.bars[decodeURIComponent(asset.symbol)]) {
+                data.bars = data.bars[decodeURIComponent(asset.symbol)];
+            }
             setStockData(data);
             setError(null);
         } catch (error) {
             setError(error.message);
         }
+        setIsLoading(false);
     };
 
     return (
         <>
             <header>
-                <TopBar />
+            <TopBar isLoggedIn={isLoggedIn} username={localStorage.getItem('username')} />
             </header>
             <main>
                 <Container fluid>
                     <Row>
                         <Col xs={12} md={8}>
-                            <SearchBar onSymbolSelect={handleSymbolSelect} symbolsData={symbolsData} />
-                            {selectedSymbol && <StockPrice symbol={selectedSymbol} stockData={stockData} error={error} />}
+                            <SearchBar onAssetSelect={handleAssetSelect} symbolsData={symbolsData} />
+                            {selectedAsset && <StockPrice symbol={decodeURIComponent(selectedAsset.symbol)} stockData={stockData} error={error} isLoading={isLoading} />}
                         </Col>
                         <Col xs={12} md={4}>
-                            <Chat symbol={selectedSymbol} />
+                            {selectedAsset && <Chat asset={selectedAsset} />}
                         </Col>
                     </Row>
                 </Container>

@@ -2,20 +2,20 @@ import React, { useState } from 'react';
 import Dropdown from 'react-bootstrap/Dropdown';
 import Form from 'react-bootstrap/Form';
 
-const SearchBar = ({ onSymbolSelect, symbolsData }) => {
+const SearchBar = ({ onAssetSelect, symbolsData }) => {
     const [searchInput, setSearchInput] = useState("");
 
     const handleChange = (e) => {
         setSearchInput(e.target.value);
     };
 
-    const handleItemClick = (name) => {
-        onSymbolSelect(name);
+    const handleItemClick = (asset) => {
+        onAssetSelect(asset);
     };
-    
+
     const lowerCaseSearchInput = searchInput.toLowerCase();
     const filteredData = searchInput
-                            ? symbolsData.filter((asset) => asset.toLowerCase().includes(lowerCaseSearchInput))
+                            ? symbolsData.filter((asset) => asset.name.toLowerCase().includes(lowerCaseSearchInput))
                             : symbolsData;
 
     return (
@@ -33,7 +33,7 @@ const SearchBar = ({ onSymbolSelect, symbolsData }) => {
                 />
                 <ul className="list-unstyled" style={{ maxHeight: '200px', overflowY: 'auto' }}>
                 {filteredData.map((asset, index) => (
-                    <Dropdown.Item key={index} onClick={() => handleItemClick(asset)}>{asset}</Dropdown.Item>
+                    <Dropdown.Item key={index} onClick={() => handleItemClick(asset)}>{asset.name}</Dropdown.Item>
                 ))}
                 </ul>
             </Dropdown.Menu>

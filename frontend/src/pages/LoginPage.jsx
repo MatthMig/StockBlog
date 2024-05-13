@@ -1,74 +1,59 @@
-import React, { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import React, { useState } from 'react';
+import { Button, Col, Container, Form, Row } from 'react-bootstrap';
 
-const LoginPage = (props) => {
-  const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
-  const [emailError, setEmailError] = useState('')
-  const [passwordError, setPasswordError] = useState('')
+function LoginPage() {
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
 
-  const navigate = useNavigate()
+    const handleLogin = async (event) => {
+      event.preventDefault();
+  
+      const response = await fetch('http://localhost:3000/auth/login', {
+          method: 'POST',
+          headers: {
+              'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ email, password }),
+      });
+  
+      const data = await response.json();
+  
+      if (response.ok) {
+          console.log('User successfully logged in:', data);
+          localStorage.setItem('token', data.token);
+          localStorage.setItem('username', data.name);
+          window.location.href = '/'; // Redirect to the home page
+      } else if (data.message == 'Wrong email/password') {
+          alert('Wrong email/password');
+      } else {
+          console.error('Error logging in:', data);
+      }
+    };
 
-  const onButtonClick = () => {
-    // Set initial error values to empty
-    setEmailError('')
-    setPasswordError('')
-  
-    // Check if the user has entered both fields correctly
-    if ('' === email) {
-      setEmailError('Please enter your email')
-      return
-    }
-  
-    if (!/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/.test(email)) {
-      setEmailError('Please enter a valid email')
-      return
-    }
-  
-    if ('' === password) {
-      setPasswordError('Please enter a password')
-      return
-    }
-  
-    if (password.length < 7) {
-      setPasswordError('The password must be 8 characters or longer')
-      return
-    }
-  
-    // Authentication calls will be made here...
-  }
+    return (
+        <Container>
+            <Row className="justify-content-md-center">
+                <Col xs={12} md={6}>
+                    <h4>Login</h4>
+                    <Form onSubmit={handleLogin}>
+                        <Form.Group controlId="formEmail">
+                            <Form.Label>Email address</Form.Label>
+                            <Form.Control type="email" placeholder="Enter email" value={email} onChange={(e) => setEmail(e.target.value)} />
+                        </Form.Group>
 
-  return (
-    <div className={'mainContainer'}>
-      <div className={'titleContainer'}>
-        <div>Login</div>
-      </div>
-      <br />
-      <div className={'inputContainer'}>
-        <input
-          value={email}
-          placeholder="Enter your email here"
-          onChange={(ev) => setEmail(ev.target.value)}
-          className={'inputBox'}
-        />
-        <label className="errorLabel">{emailError}</label>
-      </div>
-      <br />
-      <div className={'inputContainer'}>
-        <input
-          value={password}
-          placeholder="Enter your password here"
-          onChange={(ev) => setPassword(ev.target.value)}
-          className={'inputBox'}
-        />
-        <label className="errorLabel">{passwordError}</label>
-      </div>
-      <br />
-      <div className={'inputContainer'}>
-        <input className={'inputButton'} type="button" onClick={onButtonClick} value={'Log in'} />
-      </div>
-    </div>
-  )
+                        <Form.Group controlId="formPassword">
+                            <Form.Label>Password</Form.Label>
+                            <Form.Control type="password" placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)} />
+                        </Form.Group>
+
+                        <Button variant="primary" type="submit">
+                            Login
+                        </Button>
+                    </Form>
+                </Col>
+            </Row>
+        </Container>
+    );
 }
 
-export default LoginPage
+export default LoginPage;

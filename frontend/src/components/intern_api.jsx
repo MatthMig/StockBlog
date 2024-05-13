@@ -1,5 +1,5 @@
-export async function fetchMessages(symbol) {
-    const response = await fetch(`http://localhost:3000/messages/${symbol}`);
+export async function fetchMessages(asset) {
+    const response = await fetch(`http://localhost:3000/messages/${asset.symbol}`);
 
     if (!response.ok) {
         throw new Error("Network response was not ok");
@@ -9,15 +9,15 @@ export async function fetchMessages(symbol) {
     return messages;
 }
 
-export async function postMessage(symbol, message) {
+export async function postMessage(asset, message) {
     // Get the token from local storage
     const token = localStorage.getItem('token');
 
-    const response = await fetch(`http://localhost:3000/messages/${symbol}`, {
+    const response = await fetch(`http://localhost:3000/messages/${asset.symbol}`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
-            //'Authorization': `Bearer ${token}`
+            'Authorization': `Bearer ${token}`
         },
         body: JSON.stringify(message),
     });
