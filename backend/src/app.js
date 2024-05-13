@@ -7,9 +7,28 @@ const cookieParser = require('cookie-parser')
 const cors = require('cors')
 const helmet = require('helmet')
 const logger = require('./util/logger')
+const Message = require('./models/Message');
+const User = require('./models/users'); 
+const messagesRouter = require('./routes/messages');
+const usersRouter = require('./routes/user');
+
+require('./models/associations');
 
 // Instantiate an Express Application
 const app = express()
+
+// Create the database table
+Promise.all([
+  Message.sync({ force: true }),
+  User.sync({ force: true })
+])
+  .then(() => {
+    console.log(`Database & tables created!`);
+
+    // Set up your routes after the tables are created
+    app.use('/messages', messagesRouter);
+    app.use('/users', usersRouter);
+  });
 
 // Configure Express App Instance
 app.use(express.json({ limit: '50mb' }))

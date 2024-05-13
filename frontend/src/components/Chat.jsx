@@ -3,12 +3,10 @@ import { Col, Row } from "react-bootstrap";
 import { fetchMessages, postMessage } from "./intern_api"; // Import your message fetching function
 
 export default function Chat({ symbol }) {
-    // State to hold the chat messages
     const [messages, setMessages] = useState([]);
-    // State to hold the current message being typed
     const [messageInput, setMessageInput] = useState('');
-    // Ref for the chat window element
     const chatWindowRef = useRef(null);
+    const [userMail, setUserMail] = useState('dummy@example.com');
 
     useEffect(() => {
         if (symbol) {
@@ -24,6 +22,7 @@ export default function Chat({ symbol }) {
     const updateMessages = () => {
         fetchMessages(symbol)
             .then(newMessages => {
+                console.log('Fetch messages:', newMessages);
                 setMessages(newMessages);
             })
             .catch(error => {
@@ -33,17 +32,18 @@ export default function Chat({ symbol }) {
 
     const sendMessage = () => {
         if (messageInput.trim() !== "") {
-            const newMessage = { text: messageInput, user: "You" };
+            const newMessage = { text: messageInput, userMail: userMail };
+            console.log("Sending message:", newMessage);
             // Update the messages state with the new message immediately
             setMessages(prevMessages => [...prevMessages, newMessage]);
             // Send the message to the server
             postMessage(symbol, newMessage)
-                .then(() => {
-                    // Once the message is sent successfully, clear the input field
-                    setMessageInput('');
-                })
                 .catch(error => {
                     console.error("Error posting message:", error);
+                })
+                .finally(() => {
+                    // Clear the input field regardless of whether an error occurred
+                    setMessageInput('');
                 });
         }
     };
@@ -70,7 +70,7 @@ export default function Chat({ symbol }) {
             <div ref={chatWindowRef} style={{ border: "1px solid #ccc", borderRadius: "5px", padding: "10px", height: "300px", overflowY: "auto" }}>
                 {messages.map((message, index) => (
                     <div key={index}>
-                        <strong>{message.user}:</strong> {message.text}
+                        <strong>{message.userName}:</strong> {message.content}
                     </div>
                 ))}
             </div>
