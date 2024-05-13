@@ -1,5 +1,4 @@
 const router = require('express').Router();
-const Message = require('../models/Message');
 const User = require('../models/users');
 
 
@@ -8,19 +7,15 @@ router.get('/', (_req, res) => {
     res.send('Auth API.\nPlease use POST /auth & POST /verify for authentication')
 })
 
-// The auth endpoint that creates a new user record or logs a user based on an existing record
-router.post('/auth', (req, res) => {
+router.post('signup', (req, res) => {
     const { email, password } = req.body
   
     // Look up the user entry in the database
-    const user = db
-      .get('users')
-      .value()
-      .filter((user) => email === user.email)
+    const user = User.findOne({ where: { email: message.userMail } })
   
     // If found, compare the hashed passwords and generate the JWT token for the user
-    if (user.length === 1) {
-      bcrypt.compare(password, user[0].password, function (_err, result) {
+    if (user) {
+      bcrypt.compare(password, user.password, function (_err, result) {
         if (!result) {
           return res.status(401).json({ message: 'Invalid password' })
         } else {
@@ -34,20 +29,61 @@ router.post('/auth', (req, res) => {
         }
       })
       // If no user is found, hash the given password and create a new entry in the auth db with the email and hashed password
-    } else if (user.length === 0) {
-      bcrypt.hash(password, 10, function (_err, hash) {
-        console.log({ email, password: hash })
-        db.get('users').push({ email, password: hash }).write()
-  
-        let loginData = {
-          email,
-          signInTime: Date.now(),
-        }
-  
-        const token = jwt.sign(loginData, jwtSecretKey)
-        res.status(200).json({ message: 'success', token })
-      })
+    } else if (!user) {
+        return res.status(401).json({ message: 'Invalid user' })
     }
+    //   bcrypt.hash(password, 10, function (_err, hash) {
+    //     console.log({ email, password: hash })
+    //     db.get('users').push({ email, password: hash }).write()
+  
+    //     let loginData = {
+    //       email,
+    //       signInTime: Date.now(),
+    //     }
+  
+    //     const token = jwt.sign(loginData, jwtSecretKey)
+    //     res.status(200).json({ message: 'success', token })
+    //   })
+  })
+
+// The auth endpoint that creates a new user record or logs a user based on an existing record
+router.post('/auth', (req, res) => {
+    const { email, password } = req.body
+  
+    // Look up the user entry in the database
+    const user = User.findOne({ where: { email: message.userMail } })
+  
+    // If found, compare the hashed passwords and generate the JWT token for the user
+    if (user) {
+      bcrypt.compare(password, user.password, function (_err, result) {
+        if (!result) {
+          return res.status(401).json({ message: 'Invalid password' })
+        } else {
+          let loginData = {
+            email,
+            signInTime: Date.now(),
+          }
+  
+          const token = jwt.sign(loginData, jwtSecretKey)
+          res.status(200).json({ message: 'success', token })
+        }
+      })
+      // If no user is found, hash the given password and create a new entry in the auth db with the email and hashed password
+    } else if (!user) {
+        return res.status(401).json({ message: 'Invalid user' })
+    }
+    //   bcrypt.hash(password, 10, function (_err, hash) {
+    //     console.log({ email, password: hash })
+    //     db.get('users').push({ email, password: hash }).write()
+  
+    //     let loginData = {
+    //       email,
+    //       signInTime: Date.now(),
+    //     }
+  
+    //     const token = jwt.sign(loginData, jwtSecretKey)
+    //     res.status(200).json({ message: 'success', token })
+    //   })
   })
 
   // The verify endpoint that checks if a given JWT token is valid
@@ -74,16 +110,13 @@ router.post('/auth', (req, res) => {
     
         console.log(req.body)
     
-        const user = db
-        .get('users')
-        .value()
-        .filter((user) => email === user.email)
+        const user = User.findOne({ where: { email: message.userMail } })
     
         console.log(user)
     
         res.status(200).json({
-        status: user.length === 1 ? 'User exists' : 'User does not exist',
-        userExists: user.length === 1,
+        status: user ? 'User exists' : 'User does not exist',
+        userExists: user,
         })
     })
 
