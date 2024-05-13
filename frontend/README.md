@@ -16,7 +16,7 @@ npm config set cache  /scratch/$USER/.cache
 
 npm init # Vous pouvez prendre les valeurs par défaut
 npm install
-node auth-server/app.js
+node src/auth-server/app.js
 npm run dev
 
 # installer des nouvelles dependances

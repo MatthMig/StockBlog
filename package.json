@@ -7,5 +7,9 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+  "repository": {
+    "type": "git",
+    "url": "ssh://git@gitlab.ensimag.fr/grenoble-inp-ensimag/4MM1CAW/ProjetCAW/StockBlog_gabriel_soria_ramos_matthieu_migne.git"
+  }
 }
