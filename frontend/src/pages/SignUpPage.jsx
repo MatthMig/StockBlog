@@ -15,14 +15,16 @@ function SignUpPage() {
 
         const data = await postAuthSignup(email, password, name);
 
-        if (data.ok) {
-            console.log(data.message);
+        if (data.status) {
             window.location.href = '/login'
         } else if (data.error == 'Weak password!') {
             setModalMessage('Weak password! Password must contain at least 8 characters, one uppercase letter, one lowercase letter, one number, and one special character.');
             setShowModal(true);
         } else if (data.error == 'A user with this email already exists.') {
             setModalMessage('A user with this email already exists.');
+            setShowModal(true);
+        } else if (data.error == 'Validation error: Validation is on name failed') {
+            setModalMessage('Username must contain only letters and not be empty.');
             setShowModal(true);
         } else {
             console.error('Error creating user:', data);

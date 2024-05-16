@@ -46,8 +46,23 @@ export async function deleteMessage(id) {
         const responseData = await response.json();
         throw new Error(responseData.error || "Network response was not ok");
     }
+}
 
-    console.log(`Message with id ${id} deleted successfully`);
+export async function deleteUser(userMail) {
+    const token = localStorage.getItem('token');
+
+    const response = await fetch(`${BASE_URL}/users/${userMail}`, {
+        method: 'DELETE',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+        },
+    });
+
+    if (!response.ok) {
+        const responseData = await response.json();
+        throw new Error(responseData.error || "Network response was not ok");
+    }
 }
 
 export async function fetchUserDetails(userMail) {
@@ -62,8 +77,7 @@ export async function fetchUserDetails(userMail) {
 
     if (!response.ok) {
         const errorData = await response.json();
-        console.error('Error fetching user details:', errorData);
-        throw new Error("Network response was not ok");
+        throw new Error("Network response was not ok:", errorData);
     }
 
     const userDetails = (await response.json()).user;

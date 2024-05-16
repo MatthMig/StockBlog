@@ -90,7 +90,6 @@ module.exports = {
   async getUser(req, res) {
     // #swagger.tags = ['Users']
     // #swagger.summary = 'Get User by email'
-    console.log('req.params', req.params);
     decoded_email = decodeURIComponent(req.params.email)
     const user = await userModel.findOne({ where: { email: decoded_email } });
     if (user) {
@@ -120,9 +119,9 @@ module.exports = {
   async deleteUser(req, res) {
     // #swagger.tags = ['Users']
     // #swagger.summary = 'Delete User'
-    if (!req.params.hasOwnProperty('id')) throw new CodeError('You must specify the id', status.BAD_REQUEST)
-    const { id } = req.params
-    await userModel.destroy({ where: { id } })
+    if (!req.params.hasOwnProperty('email')) throw new CodeError('You must specify the email', status.BAD_REQUEST)
+    decoded_email = decodeURIComponent(req.params.email)
+    await userModel.destroy({ where: { email: decoded_email } })
     res.json({ status: true, message: 'User deleted' })
   }
 }

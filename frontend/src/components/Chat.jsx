@@ -49,7 +49,6 @@ export default function Chat({ asset }) {
                 return;
             }
             const newMessage = { text: messageInput, token: token };
-            console.log("Sending message:", newMessage);
             // Send the message to the server
             postMessage(asset, newMessage)
                 .then(() => {
@@ -92,7 +91,6 @@ export default function Chat({ asset }) {
     const handleUserClick = async (userMail) => {
         const userDetails = await fetchUserDetails(userMail);
         setSelectedUser(userDetails);
-        console.log('userDetails', userDetails)
         setShowUserModal(true);
     };
 
@@ -160,8 +158,12 @@ export default function Chat({ asset }) {
             />
             <UserDetailsModal
                 show={showUserModal}
-                handleClose={() => setShowUserModal(false)}
+                handleClose={() => {
+                    setShowUserModal(false);
+                    updateMessages();
+                }}
                 user={selectedUser}
+                currentUser={{ role: userRole }}
             />
         </Row>
     );

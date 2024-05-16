@@ -15,7 +15,6 @@ function LoginPage() {
         const data = await postAuthLogin(email, password);
     
         if (data && data.token) {
-            console.log('User successfully logged in:', data);
             localStorage.setItem('token', data.token);
             localStorage.setItem('username', data.name);
             localStorage.setItem('role', data.role);
