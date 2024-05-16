@@ -28,9 +28,11 @@ const UserDetailsModal = ({ user, show, handleClose }) => {
             <Modal.Body>
                 {user && (
                     <>
+                        {user.role === 'admin' && (
+                            <p style={{ color: 'red' }}><strong>Admin</strong></p>
+                        )}
                         <p><strong>Username:</strong> {user.name}</p>
                         <p><strong>Email:</strong> {user.email}</p>
-                        {/* Add more fields as needed */}
                     </>
                 )}
             </Modal.Body>

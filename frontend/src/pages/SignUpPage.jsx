@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Button, Col, Container, Form, Row } from 'react-bootstrap';
 import { WarningModal } from '../components/Modals';
+import { postAuthSignup } from '../components/api';
 
 function SignUpPage() {
     const [email, setEmail] = useState('');
@@ -12,17 +13,9 @@ function SignUpPage() {
     const handleSignUp = async (event) => {
         event.preventDefault();
 
-        const response = await fetch('http://localhost:3000/auth/signup', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ email, password, name }),
-        });
+        const data = await postAuthSignup(email, password, name);
 
-        const data = await response.json();
-
-        if (response.ok) {
+        if (data.ok) {
             console.log(data.message);
             window.location.href = '/login'
         } else if (data.error == 'Weak password!') {
