@@ -1,13 +1,15 @@
 import React, { useEffect, useRef, useState } from "react";
 import { Button, Col, Row, Spinner } from "react-bootstrap";
-import CustomModal from "./Modal";
-import { deleteMessage, fetchMessages, postMessage } from "./intern_api";
+import { UserDetailsModal, WarningModal } from "./Modals";
+import { deleteMessage, fetchMessages, fetchUserDetails, postMessage } from "./api";
 
 export default function Chat({ asset }) {
     const [messages, setMessages] = useState([]);
     const [messageInput, setMessageInput] = useState('');
     const [isLoading, setIsLoading] = useState(false);
-    const [showModal, setShowModal] = useState(false);
+    const [showWarningModal, setShowWarningModal] = useState(false);
+    const [showUserModal, setShowUserModal] = useState(false);
+    const [selectedUser, setSelectedUser] = useState(null);
     const chatWindowRef = useRef(null);
 
     const updateMessages = () => {
@@ -15,6 +17,7 @@ export default function Chat({ asset }) {
             .then(newMessages => {
                 const updatedMessages = newMessages.map(message => ({
                     username: message.user.name,
+                    userMail: message.userMail,
                     content: message.content,
                     id: message.id
                 }));
@@ -42,7 +45,7 @@ export default function Chat({ asset }) {
         if (messageInput.trim() !== "") {
             const token = localStorage.getItem('token');
             if (token === null) {
-                setShowModal(true);
+                setShowWarningModal(true);
                 return;
             }
             const newMessage = { text: messageInput, token: token };
@@ -86,6 +89,13 @@ export default function Chat({ asset }) {
         setMessageInput(e.target.value);
     };
 
+    const handleUserClick = async (userMail) => {
+        const userDetails = await fetchUserDetails(userMail);
+        setSelectedUser(userDetails);
+        console.log('userDetails', userDetails)
+        setShowUserModal(true);
+    };
+
     const scrollToBottom = () => {
         if (chatWindowRef.current) {
             chatWindowRef.current.scrollTop = chatWindowRef.current.scrollHeight;
@@ -106,7 +116,14 @@ export default function Chat({ asset }) {
                     messages.map((message, index) => (
                         <div key={index} className="d-flex justify-content-between">
                             <div>
-                                <strong>{message.username}:</strong> {message.content}
+                                {userRole === 'admin' ? (
+                                    <strong onClick={() => handleUserClick(message.userMail)} className="link">
+                                        {message.username}:
+                                    </strong>
+                                ) : (
+                                    <strong>{message.username}:</strong>
+                                )}
+                                {message.content}
                             </div>
                             {userRole === 'admin' && (
                                 <Button
@@ -136,10 +153,15 @@ export default function Chat({ asset }) {
                     <button className="btn btn-primary" onClick={sendMessage}>Send</button>
                 </Col>
             </Row>
-            <CustomModal 
-                show={showModal} 
-                handleClose={() => setShowModal(false)} 
+            <WarningModal
+                show={showWarningModal}
+                handleClose={() => setShowWarningModal(false)}
                 text={'You must be logged in to post messages.'}
+            />
+            <UserDetailsModal
+                show={showUserModal}
+                handleClose={() => setShowUserModal(false)}
+                user={selectedUser}
             />
         </Row>
     );

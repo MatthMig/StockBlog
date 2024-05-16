@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Button, Col, Container, Form, Row } from 'react-bootstrap';
-import CustomModal from '../components/Modal';
+import { WarningModal } from '../components/Modals';
+import { postAuthLogin } from '../components/api';
 
 function LoginPage() {
     const [email, setEmail] = useState('');
@@ -10,24 +11,16 @@ function LoginPage() {
 
     const handleLogin = async (event) => {
         event.preventDefault();
-
-        const response = await fetch('http://localhost:3000/auth/login', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ email, password }),
-        });
-
-        const data = await response.json();
-
-        if (response.ok) {
+    
+        const data = await postAuthLogin(email, password);
+    
+        if (data && data.token) {
             console.log('User successfully logged in:', data);
             localStorage.setItem('token', data.token);
             localStorage.setItem('username', data.name);
             localStorage.setItem('role', data.role);
             window.location.href = '/'; // Redirect to the home page
-        } else if (data.message == 'Wrong email/password') {
+        } else if (data && data.message === 'Wrong email/password') {
             setModalText('Wrong email/password');
             setShowModal(true);
         } else {
@@ -55,7 +48,7 @@ function LoginPage() {
                             Login
                         </Button>
                     </Form>
-                    <CustomModal 
+                    <WarningModal 
                         show={showModal} 
                         handleClose={() => setShowModal(false)} 
                         text={modalText}

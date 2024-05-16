@@ -59,8 +59,14 @@ canvas {
 }
 
 .btn-xs {
-  padding: .1rem .45rem;
-  font-size: .7rem;
-  line-height: .5;
-  border-radius: .2rem;
+  padding: 0.1rem 0.45rem;
+  font-size: 0.7rem;
+  line-height: 0.5;
+  border-radius: 0.2rem;
+}
+
+.link {
+  cursor: pointer;
+  color: blue;
+  text-decoration: underline;
 }

@@ -11,32 +11,50 @@ function validPassword(password) {
   return /^(?=.*[\d])(?=.*[A-Z])(?=.*[a-z])(?=.*[!@#$%^&*])[\w!@#$%^&*]{8,}$/.test(password)
 }
 
-async function verifyToken(req, res) {
-  const token = req.headers['authorization'];
-  if (!token) {
+async function verifyToken(req, res, next) {
+  const authHeader = req.headers['authorization'];
+  if (!authHeader) {
     return res.status(403).json({ error: 'No token provided' });
   }
+
+  // Split the 'Bearer' prefix from the token
+  const parts = authHeader.split(' ');
+  if (parts.length !== 2 || parts[0] !== 'Bearer') {
+    return res.status(403).json({ error: 'Invalid token format' });
+  }
+  const token = parts[1];
+
   try {
-    const decoded = jws.verify(token, 'HS256', ACCESS_TOKEN_SECRET);
+    const isValid = jws.verify(token, 'HS256', ACCESS_TOKEN_SECRET);
+    if (!isValid) {
+      return res.status(403).json({ error: 'Invalid token' });
+    }
+
+    const decoded = jws.decode(token);
     const user = await userModel.findOne({ where: { email: decoded.payload } });
     if (!user) {
       return res.status(403).json({ error: 'Invalid token' });
     }
-    return user;
+    req.user = user;
+    next();
   } catch (err) {
-    return res.status(403).json({ error: 'Invalid token' });
+    return res.status(500).json({ error: err.message });
   }
 }
 
-async function verifyAdminToken(req, res) {
-  const user = await verifyToken(req, res);
-  if (user && user.role !== 'admin') {
-    return res.status(403).json({ error: 'Access denied' });
-  }
-  return user;
+async function verifyAdminToken(req, res, next) {
+  await verifyToken(req, res, function () {
+    if (req.user && req.user.role !== 'admin') {
+      return res.status(403).json({ error: 'Access denied' });
+    }
+    next();
+  });
 }
 
 module.exports = {
+  verifyToken,
+  verifyAdminToken,
+
   async login(req, res) {
     // #swagger.tags = ['Users']
     // #swagger.summary = 'Verify credentials of user using email and password and return token'
@@ -47,7 +65,7 @@ module.exports = {
     if (user) {
       if (await bcrypt.compare(password, user.passhash)) {
         const token = jws.sign({ header: { alg: 'HS256' }, payload: email, secret: ACCESS_TOKEN_SECRET })
-        res.json({ status: true, message: 'Login/Password ok', token, name: user.name, role: user.role})
+        res.json({ status: true, message: 'Login/Password ok', token, name: user.name, role: user.role })
         return
       }
     }
@@ -66,20 +84,28 @@ module.exports = {
   async getUsers(req, res) {
     // #swagger.tags = ['Users']
     // #swagger.summary = 'Get All users'
-    const user = await verifyAdminToken(req, res);
-    if (!user) return;
-    const data = await userModel.findAll({ attributes: ['name', 'email'] })
+    const data = await userModel.findAll({ attributes: ['name', 'email', 'role'] })
     res.json({ status: true, message: 'Returning users', data })
+  },
+  async getUser(req, res) {
+    // #swagger.tags = ['Users']
+    // #swagger.summary = 'Get User by email'
+    console.log('req.params', req.params);
+    decoded_email = decodeURIComponent(req.params.email)
+    const user = await userModel.findOne({ where: { email: decoded_email } });
+    if (user) {
+      res.json({ status: true, message: 'Returning user', user });
+    } else {
+      res.status(404).json({ status: false, message: 'User not found' });
+    }
   },
   async updateUser(req, res) {
     // #swagger.tags = ['Users']
     // #swagger.summary = 'Mettre à jour les informations de l utilisateur (réservé à un utilisateur administrateur)'
     // #swagger.parameters['obj'] = { in: 'body', schema: { $name: 'John Doe', $email: 'John.Doe@acme.com', $password: '1m02P@SsF0rt!' }}
-    const user = await verifyAdminToken(req, res);
-    if (!user) return;
     const userModified = {}
     for (const field of ['name', 'email', 'password']) {
-      if (has(req.body, field)) {
+      if (req.body.hasOwnProperty(field)) {
         if (field === 'password') {
           userModified.passhash = await bcrypt.hash(req.body.password, 2)
         } else {
@@ -94,9 +120,7 @@ module.exports = {
   async deleteUser(req, res) {
     // #swagger.tags = ['Users']
     // #swagger.summary = 'Delete User'
-    const user = await verifyAdminToken(req, res);
-    if (!user) return;
-    if (!has(req.params, 'id')) throw new CodeError('You must specify the id', status.BAD_REQUEST)
+    if (!req.params.hasOwnProperty('id')) throw new CodeError('You must specify the id', status.BAD_REQUEST)
     const { id } = req.params
     await userModel.destroy({ where: { id } })
     res.json({ status: true, message: 'User deleted' })

@@ -4,6 +4,7 @@ import Chat from '../components/Chat';
 import SearchBar from "../components/SearchBar";
 import StockPrice from "../components/StockPrice";
 import TopBar from "../components/TopBar";
+import { fetchBars, fetchSymbols } from '../components/api';
 
 function HomePage() {
     const [symbolsData, setSymbolsData] = useState([]);
@@ -12,18 +13,16 @@ function HomePage() {
     const [error, setError] = useState(null);
     const [isLoading, setIsLoading] = useState(false);
 
-    useEffect(() => {
-        const fetchDataFromAPI = async () => {
+    useEffect(() => {   
+        const fetchSymbolsData = async () => {
             try {
-                const response = await fetch('http://localhost:3000/alpaca/symbols');
-                const data = await response.json();
+                const data = await fetchSymbols();
                 setSymbolsData(data);
             } catch (error) {
-                console.error('Error fetching symbols:', error);
+                setError(error);
             }
         };
-
-        fetchDataFromAPI();
+        fetchSymbolsData();
     }, []);
 
     const isLoggedIn = Boolean(localStorage.getItem('token'));
@@ -36,25 +35,10 @@ function HomePage() {
         setSelectedAsset(asset);
         setIsLoading(true);
         try {
-            const startDate = new Date();
-            startDate.setMonth(startDate.getMonth() - 5);
-            const start = startDate.toISOString();
-
-            const endDate = new Date();
-            endDate.setMinutes(endDate.getMinutes() - 16);
-            const end = endDate.toISOString();
-
-            const timeframe = '1D';
-
-            const response = await fetch(`http://localhost:3000/alpaca/bars/${asset.class}/${asset.symbol}/${start}/${end}/${timeframe}`);
-            let data = await response.json();
-            if (typeof data.bars === 'object' && data.bars[decodeURIComponent(asset.symbol)]) {
-                data.bars = data.bars[decodeURIComponent(asset.symbol)];
-            }
+            const data = await fetchBars(asset);
             setStockData(data);
-            setError(null);
         } catch (error) {
-            setError(error.message);
+            setError(error);
         }
         setIsLoading(false);
     };

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Button, Col, Container, Form, Row } from 'react-bootstrap';
-import CustomModal from '../components/Modal';
+import { WarningModal } from '../components/Modals';
 
 function SignUpPage() {
     const [email, setEmail] = useState('');
@@ -61,7 +61,7 @@ function SignUpPage() {
                             Sign Up
                         </Button>
                     </Form>
-                    <CustomModal
+                    <WarningModal
                         show={showModal}
                         handleClose={() => setShowModal(false)}
                         text={modalMessage}

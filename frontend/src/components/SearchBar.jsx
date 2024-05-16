@@ -15,8 +15,8 @@ const SearchBar = ({ onAssetSelect, symbolsData }) => {
 
     const lowerCaseSearchInput = searchInput.toLowerCase();
     const filteredData = searchInput
-                            ? symbolsData.filter((asset) => asset.name.toLowerCase().includes(lowerCaseSearchInput))
-                            : symbolsData;
+        ? symbolsData.filter((asset) => asset.name.toLowerCase().includes(lowerCaseSearchInput))
+        : symbolsData;
 
     return (
         <Dropdown>
@@ -32,9 +32,13 @@ const SearchBar = ({ onAssetSelect, symbolsData }) => {
                     value={searchInput}
                 />
                 <ul className="list-unstyled" style={{ maxHeight: '200px', overflowY: 'auto' }}>
-                {filteredData.map((asset, index) => (
-                    <Dropdown.Item key={index} onClick={() => handleItemClick(asset)}>{asset.name}</Dropdown.Item>
-                ))}
+                    {filteredData.length > 0 ? (
+                        filteredData.map((asset, index) => (
+                            <Dropdown.Item key={index} onClick={() => handleItemClick(asset)}>{asset.name}</Dropdown.Item>
+                        ))
+                    ) : (
+                        <li className="mx-3 my-2">No symbols available</li>
+                    )}
                 </ul>
             </Dropdown.Menu>
         </Dropdown>
