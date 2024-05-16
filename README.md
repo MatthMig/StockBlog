@@ -7,11 +7,10 @@ author:
 
 ## Cahier des charges
 
-Nous souhaitons créer un site affichant les courbes de différents actifs bousiers et qui donne la possibilité aux utilisateurs d'interagir à leur sujet en commentant, ou en pariant sur une montée ou une descente de la valeur de l'actif à la prochaine unité de temps. Seul les utilisateurs connectés peuvent commenter et voter. 
+Nous souhaitons créer un site affichant les courbes de différents actifs bousiers et qui donne la possibilité aux utilisateurs d'interagir à leur sujet en commentant, ou en pariant sur une montée ou une descente de la valeur de l'actif à la prochaine unité de temps. Seul les utilisateurs connectés peuvent commenter. 
 
-Le site comportera 3 vues principales: 
-- la page d'accueil qui montrent quelques informations sur plusieurs actifs et donne la possibilité d'accéder aux paramètres de son compte
-- la page d'un actif montrant un graphique, ses votes et ses commentaires
+Le site comportera 2 vues principales: 
+- la page d'accueil qui a une boîte de sélection pour choisir le graphique à afficher avec les commentaires associés et donne la possibilité d'accéder aux paramètres de son compte
 - la page de ses paramètres de compte
 
 ### Cas d'usage
@@ -27,22 +26,22 @@ rectangle StockBlog {
   usecase "Connect" as CN
   usecase "Browse website views" as BWV
   usecase "Comment" as CM
-  usecase "Vote" as V
   usecase "Delete his account" as DHA
   usecase "Delete his comments" as DHC
   usecase "Disconnect" as D
   usecase "Delete any account" as DAA
   usecase "Delete any comment" as DAC
+  usecase "Modify its username or password" as MUP
 }
 v --> R
 v --> CN
 v --> BWV
 cu --> BWV
 cu --> CM
-cu --> V
 cu --> DHA
 cu --> DHC
 cu --> D
+cu --> MUP
 a --> DAA
 a --> DAC
 a --> cu
@@ -124,18 +123,11 @@ class Comments {
   content
 }
 
-class Votes{
-  upVotes
-  downVotes
-}
-
 class StockCurve{
   id
 }
 
 StockCurve "1" -- "n" Comments
-StockCurve "1" -- "1" Votes
-Votes "n" <-- "n" User : votes
 User "1" --> "n" Comments : posts
 ```
 
