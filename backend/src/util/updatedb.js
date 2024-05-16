@@ -1,17 +1,30 @@
-const userModel = require('../models/users.js')
 const bcrypt = require('bcrypt');
-// Ajouter ici les nouveaux require des nouveaux modèles
+const userModel = require('../models/users');
 
-// eslint-disable-next-line no-unexpected-multiline
-(async () => {
-  // Regénère la base de données
-  await require('../models/database.js').sync({ force: true })
-  console.log('Base de données créée.')
-  // Initialise la base avec quelques données
-  const passhash = await bcrypt.hash('123456', 2)
-  console.log(passhash)
-  await userModel.create({
-    name: 'Sebastien Viardot', email: 'Sebastien.Viardot@grenoble-inp.fr', passhash
-  })
-  // Ajouter ici le code permettant d'initialiser par défaut la base de donnée
-})()
+async function createInitialAdmin() {
+    const adminName = 'Sebastien Viardot';
+    const adminEmail = 'Sebastien.Viardot@grenoble-inp.fr';
+    const adminPassword = '123456';
+
+    // Check if the admin already exists
+    const existingAdmin = await userModel.findOne({ where: { email: adminEmail } });
+    if (existingAdmin) {
+        console.log('Admin user already exists');
+        return;
+    }
+
+    // Hash the password
+    const hashedPassword = await bcrypt.hash(adminPassword, 10);
+
+    // Create the admin
+    await userModel.create({
+        name: adminName,
+        email: adminEmail,
+        passhash: hashedPassword,
+        role: 'admin'
+    });
+
+    console.log('Admin user created');
+}
+
+module.exports = createInitialAdmin;

@@ -97,3 +97,9 @@
   cursor: 'pointer';
   margin-top: 10px;
 }
+
+.admin-indicator {
+  color: red;
+  font-weight: bold;
+  margin-right: 10px;
+}

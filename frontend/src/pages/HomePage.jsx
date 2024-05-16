@@ -28,6 +28,10 @@ function HomePage() {
 
     const isLoggedIn = Boolean(localStorage.getItem('token'));
 
+    const role = localStorage.getItem('role');
+
+    const username = localStorage.getItem('username');
+
     const handleAssetSelect = async (asset) => {
         setSelectedAsset(asset);
         setIsLoading(true);
@@ -58,7 +62,7 @@ function HomePage() {
     return (
         <>
             <header>
-            <TopBar isLoggedIn={isLoggedIn} username={localStorage.getItem('username')} />
+                <TopBar isLoggedIn={isLoggedIn} username={username} role={role} />
             </header>
             <main>
                 <Container fluid>

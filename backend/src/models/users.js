@@ -21,6 +21,13 @@ const users = db.define('users', {
     validate: {
       is: /^[0-9a-z\\/$.]{60}$/i
     }
+  },
+  role: {
+    type: Sequelize.STRING(20),
+    defaultValue: 'user',
+    validate: {
+      isIn: [['user', 'admin']]
+    }
   }
 }, { timestamps: false })
 module.exports = users

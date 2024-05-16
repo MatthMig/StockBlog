@@ -68,6 +68,50 @@ router.post('/:symbol', async (req, res) => {
     }
 });
 
+router.delete('/:id', async (req, res) => {
+    const id = req.params.id;
+
+    const authHeader = req.headers.authorization;
+    const token = authHeader && authHeader.split(' ')[1];
+
+    if (!token) {
+        res.status(401).json({ error: 'Token not provided' });
+        return;
+    }
+
+    let decodedToken;
+    try {
+        decodedToken = jws.decode(token);
+    } catch (error) {
+        console.error('Invalid token');
+        return;
+    }
+    const email = decodedToken.payload;
+
+    const user = await User.findOne({ where: { email: email } });
+
+    if (!user || user.role !== 'admin') {
+        res.status(403).json({ error: 'User not authorized' });
+        return;
+    }
+
+    try {
+        const message = await Message.findOne({ where: { id: id } });
+
+        if (!message) {
+            res.status(404).json({ error: 'Message not found' });
+            return;
+        }
+
+        await message.destroy();
+
+        res.json({ success: true });
+    } catch (error) {
+        console.error('Error deleting message:', error);
+        res.status(500).json({ error: 'Error deleting message' });
+    }
+});
+
 async function fetchMessagesFromDatabase(symbol) {
     const messages = await Message.findAll({
         where: {

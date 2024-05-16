@@ -11,6 +11,7 @@ const Message = require('./models/Message');
 const User = require('./models/users'); 
 const messagesRouter = require('./routes/messages');
 const usersRouter = require('./routes/user');
+const createInitialAdmin = require('./util/updatedb');
 
 require('./models/associations');
 
@@ -24,6 +25,8 @@ Promise.all([
 ])
   .then(() => {
     console.log(`Database & tables created!`);
+
+    createInitialAdmin();
 
     // Set up your routes after the tables are created
     app.use('/messages', messagesRouter);

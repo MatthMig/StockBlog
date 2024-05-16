@@ -1,22 +1,14 @@
 import React, { useEffect, useRef, useState } from "react";
-import { Col, Row } from "react-bootstrap";
-import { fetchMessages, postMessage } from "./intern_api"; // Import your message fetching function
+import { Button, Col, Row, Spinner } from "react-bootstrap";
+import CustomModal from "./Modal";
+import { deleteMessage, fetchMessages, postMessage } from "./intern_api";
 
 export default function Chat({ asset }) {
     const [messages, setMessages] = useState([]);
     const [messageInput, setMessageInput] = useState('');
+    const [isLoading, setIsLoading] = useState(false);
+    const [showModal, setShowModal] = useState(false);
     const chatWindowRef = useRef(null);
-
-    useEffect(() => {
-        if (asset) {
-            updateMessages();
-        }
-    }, [asset]); // Run this effect when the symbol changes
-
-    useEffect(() => {
-        // Scroll to the bottom when the chat window or sidebar is displayed
-        scrollToBottom();
-    }, [messages]); // Run this effect when new messages are received
 
     const updateMessages = () => {
         fetchMessages(asset)
@@ -24,6 +16,7 @@ export default function Chat({ asset }) {
                 const updatedMessages = newMessages.map(message => ({
                     username: message.user.name,
                     content: message.content,
+                    id: message.id
                 }));
                 setMessages(updatedMessages);
             })
@@ -32,11 +25,24 @@ export default function Chat({ asset }) {
             });
     }
 
+    useEffect(() => {
+        if (asset) {
+            setIsLoading(true);
+            updateMessages();
+            setIsLoading(false);
+        }
+    }, [asset]); // Run this effect when the symbol changes
+
+    useEffect(() => {
+        // Scroll to the bottom when the chat window or sidebar is displayed
+        scrollToBottom();
+    }, [messages]); // Run this effect when new messages are received
+
     const sendMessage = () => {
         if (messageInput.trim() !== "") {
             const token = localStorage.getItem('token');
             if (token === null) {
-                alert('You must be logged in to post messages.');
+                setShowModal(true);
                 return;
             }
             const newMessage = { text: messageInput, token: token };
@@ -45,8 +51,9 @@ export default function Chat({ asset }) {
             postMessage(asset, newMessage)
                 .then(() => {
                     // Update the messages state with the new message locally only if no error occurred
-                    const localMessage = {content: newMessage.text, username: localStorage.getItem('username')}
+                    const localMessage = { content: newMessage.text, username: localStorage.getItem('username') }
                     setMessages(prevMessages => [...prevMessages, localMessage]);
+                    updateMessages();
                 })
                 .catch(error => {
                     console.error("Error posting message:", error);
@@ -55,8 +62,18 @@ export default function Chat({ asset }) {
                     // Clear the input field regardless of whether an error occurred
                     setMessageInput('');
                 });
-            updateMessages();
         }
+    };
+
+    const removeMessage = (id) => {
+        deleteMessage(id)
+            .then(() => {
+                // Remove the message from the local state
+                setMessages(prevMessages => prevMessages.filter(message => message.id !== id));
+            })
+            .catch(error => {
+                console.error("Error deleting message:", error);
+            });
     };
 
     const handleKeyPress = (e) => {
@@ -75,15 +92,34 @@ export default function Chat({ asset }) {
         }
     };
 
+    const userRole = localStorage.getItem('role');
+
     return (
         <Row className="chat-box">
             <h1>Chat</h1>
-            <div ref={chatWindowRef} style={{ border: "1px solid #ccc", borderRadius: "5px", padding: "10px", height: "300px", overflowY: "auto" }}>
-                {messages.map((message, index) => (
-                    <div key={index}>
-                        <strong>{message.username}:</strong> {message.content}
-                    </div>
-                ))}
+            <div ref={chatWindowRef} className="chat-messages">
+                {isLoading ? (
+                    <Spinner animation="border" role="status">
+                        <span className="sr-only">Loading...</span>
+                    </Spinner>
+                ) : (
+                    messages.map((message, index) => (
+                        <div key={index} className="d-flex justify-content-between">
+                            <div>
+                                <strong>{message.username}:</strong> {message.content}
+                            </div>
+                            {userRole === 'admin' && (
+                                <Button
+                                    variant="secondary"
+                                    className="ml-2 rounded-circle btn-xs"
+                                    onClick={() => removeMessage(message.id)}
+                                >
+                                    X
+                                </Button>
+                            )}
+                        </div>
+                    ))
+                )}
             </div>
             <Row className="bar">
                 <Col className="input-field">
@@ -100,6 +136,11 @@ export default function Chat({ asset }) {
                     <button className="btn btn-primary" onClick={sendMessage}>Send</button>
                 </Col>
             </Row>
+            <CustomModal 
+                show={showModal} 
+                handleClose={() => setShowModal(false)} 
+                text={'You must be logged in to post messages.'}
+            />
         </Row>
     );
 }

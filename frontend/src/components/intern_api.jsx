@@ -28,3 +28,22 @@ export async function postMessage(asset, message) {
         throw new Error(responseData.error || "Network response was not ok");
     }
 }
+
+export async function deleteMessage(id) {
+    const token = localStorage.getItem('token');
+
+    const response = await fetch(`http://localhost:3000/messages/${id}`, {
+        method: 'DELETE',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+        },
+    });
+
+    if (!response.ok) {
+        const responseData = await response.json();
+        throw new Error(responseData.error || "Network response was not ok");
+    }
+
+    console.log(`Message with id ${id} deleted successfully`);
+}

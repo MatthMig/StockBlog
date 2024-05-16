@@ -49,3 +49,18 @@ canvas {
 .stock-price {
   height: 100%;
 }
+
+.chat-messages {
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  padding: 10px;
+  height: 300px;
+  overflow-y: auto;
+}
+
+.btn-xs {
+  padding: .1rem .45rem;
+  font-size: .7rem;
+  line-height: .5;
+  border-radius: .2rem;
+}

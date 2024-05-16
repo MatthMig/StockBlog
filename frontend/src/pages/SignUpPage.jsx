@@ -1,14 +1,17 @@
 import React, { useState } from 'react';
 import { Button, Col, Container, Form, Row } from 'react-bootstrap';
+import CustomModal from '../components/Modal';
 
 function SignUpPage() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [name, setName] = useState('');
+    const [showModal, setShowModal] = useState(false);
+    const [modalMessage, setModalMessage] = useState('');
 
     const handleSignUp = async (event) => {
         event.preventDefault();
-    
+
         const response = await fetch('http://localhost:3000/auth/signup', {
             method: 'POST',
             headers: {
@@ -16,17 +19,18 @@ function SignUpPage() {
             },
             body: JSON.stringify({ email, password, name }),
         });
-    
+
         const data = await response.json();
-    
+
         if (response.ok) {
             console.log(data.message);
             window.location.href = '/login'
-        } else if(data.error == 'Weak password!') {
-            alert('Weak password! Password must contain at least 8 characters, one uppercase letter, one lowercase letter, one number, and one special character.');
-        } else if(data.error == 'A user with this email already exists.') {
-            alert('A user with this email already exists.');  
-            window.location.href = '/login'      
+        } else if (data.error == 'Weak password!') {
+            setModalMessage('Weak password! Password must contain at least 8 characters, one uppercase letter, one lowercase letter, one number, and one special character.');
+            setShowModal(true);
+        } else if (data.error == 'A user with this email already exists.') {
+            setModalMessage('A user with this email already exists.');
+            setShowModal(true);
         } else {
             console.error('Error creating user:', data);
         }
@@ -57,6 +61,11 @@ function SignUpPage() {
                             Sign Up
                         </Button>
                     </Form>
+                    <CustomModal
+                        show={showModal}
+                        handleClose={() => setShowModal(false)}
+                        text={modalMessage}
+                    />
                 </Col>
             </Row>
         </Container>

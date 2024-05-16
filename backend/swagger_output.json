@@ -245,10 +245,16 @@
         }
       }
     },
-    "/alpaca/bars/{symbol}/{start}/{end}/{timeframe}": {
+    "/alpaca/bars/{asset_class}/{symbol}/{start}/{end}/{timeframe}": {
       "get": {
         "description": "",
         "parameters": [
+          {
+            "name": "asset_class",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
           {
             "name": "symbol",
             "in": "path",

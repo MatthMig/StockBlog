@@ -1,33 +1,38 @@
 import React, { useState } from 'react';
 import { Button, Col, Container, Form, Row } from 'react-bootstrap';
+import CustomModal from '../components/Modal';
 
 function LoginPage() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const [showModal, setShowModal] = useState(false);
+    const [modalText, setModalText] = useState('');
 
     const handleLogin = async (event) => {
-      event.preventDefault();
-  
-      const response = await fetch('http://localhost:3000/auth/login', {
-          method: 'POST',
-          headers: {
-              'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({ email, password }),
-      });
-  
-      const data = await response.json();
-  
-      if (response.ok) {
-          console.log('User successfully logged in:', data);
-          localStorage.setItem('token', data.token);
-          localStorage.setItem('username', data.name);
-          window.location.href = '/'; // Redirect to the home page
-      } else if (data.message == 'Wrong email/password') {
-          alert('Wrong email/password');
-      } else {
-          console.error('Error logging in:', data);
-      }
+        event.preventDefault();
+
+        const response = await fetch('http://localhost:3000/auth/login', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ email, password }),
+        });
+
+        const data = await response.json();
+
+        if (response.ok) {
+            console.log('User successfully logged in:', data);
+            localStorage.setItem('token', data.token);
+            localStorage.setItem('username', data.name);
+            localStorage.setItem('role', data.role);
+            window.location.href = '/'; // Redirect to the home page
+        } else if (data.message == 'Wrong email/password') {
+            setModalText('Wrong email/password');
+            setShowModal(true);
+        } else {
+            console.error('Error logging in:', data);
+        }
     };
 
     return (
@@ -50,6 +55,11 @@ function LoginPage() {
                             Login
                         </Button>
                     </Form>
+                    <CustomModal 
+                        show={showModal} 
+                        handleClose={() => setShowModal(false)} 
+                        text={modalText}
+                    />
                 </Col>
             </Row>
         </Container>
