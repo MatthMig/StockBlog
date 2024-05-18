@@ -99,21 +99,38 @@ module.exports = {
     }
   },
   async updateUser(req, res) {
-    // #swagger.tags = ['Users']
-    // #swagger.summary = 'Mettre à jour les informations de l utilisateur (réservé à un utilisateur administrateur)'
-    // #swagger.parameters['obj'] = { in: 'body', schema: { $name: 'John Doe', $email: 'John.Doe@acme.com', $password: '1m02P@SsF0rt!' }}
     const userModified = {}
-    for (const field of ['name', 'email', 'password']) {
+    for (const field of ['name', 'password']) {
       if (req.body.hasOwnProperty(field)) {
         if (field === 'password') {
-          userModified.passhash = await bcrypt.hash(req.body.password, 2)
-        } else {
+          if (req.body.password) {
+            if (validPassword(req.body.password) === false) {
+              throw new CodeError('Weak password!', status.BAD_REQUEST);
+            }
+            userModified.passhash = await bcrypt.hash(req.body.password, 2)
+          }
+        } else if (req.body[field]) {
           userModified[field] = req.body[field]
         }
       }
     }
-    if (Object.keys(userModified).length === 0) throw new CodeError('You must specify the name, email or password', status.BAD_REQUEST)
-    await userModel.update(userModified, { where: { id: req.params.id } })
+
+    if (Object.keys(userModified).length === 0) throw new CodeError('You must specify the name or password', status.BAD_REQUEST)
+
+    const decoded_email = decodeURIComponent(req.params.email)
+    const user = await userModel.findOne({ where: { email: decoded_email } });
+
+    if (!user) {
+      return res.status(404).json({ status: false, message: 'User not found' });
+    }
+
+    if (req.user.email !== user.email && req.user.role !== 'admin') {
+      return res.status(403).json({ status: false, message: 'Access denied' });
+    }
+
+    console.log('User to update:', userModified);
+    await userModel.update(userModified, { where: { email: decoded_email } });
+
     res.json({ status: true, message: 'User updated' })
   },
   async deleteUser(req, res) {

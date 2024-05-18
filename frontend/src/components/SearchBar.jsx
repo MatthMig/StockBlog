@@ -20,7 +20,7 @@ const SearchBar = ({ onAssetSelect, symbolsData }) => {
 
     return (
         <Dropdown>
-            <Dropdown.Toggle variant="light" id="dropdown-custom-components">
+            <Dropdown.Toggle variant="primary" id="dropdown-custom-components">
                 {searchInput ? `Filtered (${filteredData.length})` : 'Select a symbol'}
             </Dropdown.Toggle>
             <Dropdown.Menu show={true}>

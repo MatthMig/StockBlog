@@ -6,13 +6,14 @@ import { deleteMessage, fetchMessages, fetchUserDetails, postMessage } from "./a
 export default function Chat({ asset }) {
     const [messages, setMessages] = useState([]);
     const [messageInput, setMessageInput] = useState('');
-    const [isLoading, setIsLoading] = useState(false);
+    const [isLoading, setIsLoading] = useState(true);
     const [showWarningModal, setShowWarningModal] = useState(false);
     const [showUserModal, setShowUserModal] = useState(false);
     const [selectedUser, setSelectedUser] = useState(null);
     const chatWindowRef = useRef(null);
 
     const updateMessages = () => {
+        setIsLoading(true);
         fetchMessages(asset)
             .then(newMessages => {
                 const updatedMessages = newMessages.map(message => ({
@@ -22,16 +23,24 @@ export default function Chat({ asset }) {
                     id: message.id
                 }));
                 setMessages(updatedMessages);
+                setIsLoading(false);
             })
             .catch(error => {
                 console.error("Error fetching messages:", error);
+                setIsLoading(false);
             });
     }
 
     useEffect(() => {
         if (asset) {
-            setIsLoading(true);
+            /*
+            // Start polling for new messages every seconds
+            const intervalId = setInterval(updateMessages, 1000);
+            // Clean up the interval on component unmount
+            return () => clearInterval(intervalId);
+            */
             updateMessages();
+        } else {
             setIsLoading(false);
         }
     }, [asset]); // Run this effect when the symbol changes
@@ -107,10 +116,10 @@ export default function Chat({ asset }) {
             <h1>Chat</h1>
             <div ref={chatWindowRef} className="chat-messages">
                 {isLoading ? (
-                    <Spinner animation="border" role="status">
-                        <span className="sr-only">Loading...</span>
-                    </Spinner>
-                ) : (
+                    <div className="spinner-chat">
+                        <Spinner animation="border" role="status" />
+                    </div>
+                ) : ( asset ? (
                     messages.map((message, index) => (
                         <div key={index} className="d-flex justify-content-between">
                             <div>
@@ -134,7 +143,9 @@ export default function Chat({ asset }) {
                             )}
                         </div>
                     ))
-                )}
+                ) : (
+                    <em>Please select a symbol to start a chat.</em>
+                ))}
             </div>
             <Row className="bar">
                 <Col className="input-field">
@@ -148,7 +159,13 @@ export default function Chat({ asset }) {
                     />
                 </Col>
                 <Col xs="auto" className="send-button">
-                    <button className="btn btn-primary" onClick={sendMessage}>Send</button>
+                    <button
+                        className={`btn ${asset ? 'btn-primary' : 'btn-secondary'}`}
+                        onClick={sendMessage}
+                        disabled={!asset}
+                    >
+                        Send
+                    </button>
                 </Col>
             </Row>
             <WarningModal

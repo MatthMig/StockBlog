@@ -8,7 +8,7 @@ import { fetchBars, fetchSymbols } from '../components/api';
 
 function HomePage() {
     const [symbolsData, setSymbolsData] = useState([]);
-    const [selectedAsset, setSelectedAsset] = useState([]);
+    const [selectedAsset, setSelectedAsset] = useState(null);
     const [stockData, setStockData] = useState([]);
     const [error, setError] = useState(null);
     const [isLoading, setIsLoading] = useState(false);
@@ -56,7 +56,7 @@ function HomePage() {
                             {selectedAsset && <StockPrice symbol={decodeURIComponent(selectedAsset.symbol)} stockData={stockData} error={error} isLoading={isLoading} />}
                         </Col>
                         <Col xs={12} md={4}>
-                            {selectedAsset && <Chat asset={selectedAsset} />}
+                            {<Chat asset={selectedAsset} />}
                         </Col>
                     </Row>
                 </Container>

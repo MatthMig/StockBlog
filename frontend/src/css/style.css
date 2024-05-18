@@ -70,3 +70,14 @@ canvas {
   color: blue;
   text-decoration: underline;
 }
+
+.spinner-chat {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+}
+
+.loading {
+  cursor: progress;
+}

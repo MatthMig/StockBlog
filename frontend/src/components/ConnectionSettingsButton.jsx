@@ -17,6 +17,7 @@ const ConnectionSettingsButton = React.memo(({ isLoggedIn, username }) => {
     function onLogOut() {
         localStorage.removeItem('token');
         localStorage.removeItem('username');
+        localStorage.removeItem('email');
         localStorage.removeItem('role');
         window.location.reload();
     }

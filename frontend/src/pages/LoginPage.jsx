@@ -17,6 +17,7 @@ function LoginPage() {
         if (data && data.token) {
             localStorage.setItem('token', data.token);
             localStorage.setItem('username', data.name);
+            localStorage.setItem('email', email);
             localStorage.setItem('role', data.role);
             window.location.href = '/'; // Redirect to the home page
         } else if (data && data.message === 'Wrong email/password') {

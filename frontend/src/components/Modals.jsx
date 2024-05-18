@@ -1,12 +1,12 @@
-import React from 'react';
-import { Button, Modal } from 'react-bootstrap';
+import { React, useState } from 'react';
+import { Button, Form, Modal } from 'react-bootstrap';
 import { deleteUser } from './api';
 
 const WarningModal = ({ text, show, handleClose }) => {
     return (
         <Modal show={show} onHide={handleClose}>
             <Modal.Header closeButton>
-                <Modal.Title>Notification</Modal.Title>
+                <Modal.Title>Warning</Modal.Title>
             </Modal.Header>
             <Modal.Body>
                 {text}
@@ -62,4 +62,41 @@ const UserDetailsModal = ({ user, show, handleClose, currentUser }) => {
     );
 }
 
-export { UserDetailsModal, WarningModal };
+const ConfirmPasswordModal = ({ show, handleClose, handleConfirm, errorMessage }) => {
+    const [password, setPassword] = useState('');
+
+    const handlePasswordChange = (e) => {
+        setPassword(e.target.value);
+    };
+
+    const handleConfirmClick = () => {
+        handleConfirm(password);
+        setPassword('');
+    };
+
+    return (
+        <Modal show={show} onHide={handleClose}>
+            <Modal.Header closeButton>
+                <Modal.Title>Confirm Password</Modal.Title>
+            </Modal.Header>
+            <Modal.Body>
+                {errorMessage && <p style={{ color: 'red' }}>{errorMessage}</p>}
+                <Form.Group controlId="formPassword">
+                    <Form.Label>Current Password:</Form.Label>
+                    <Form.Control type="password" value={password} onChange={handlePasswordChange} />
+                </Form.Group>
+            </Modal.Body>
+            <Modal.Footer>
+                <Button variant="secondary" onClick={handleClose}>
+                    Close
+                </Button>
+                <Button variant="primary" onClick={handleConfirmClick}>
+                    Confirm
+                </Button>
+            </Modal.Footer>
+        </Modal>
+    );
+}
+
+export { ConfirmPasswordModal, UserDetailsModal, WarningModal };
+

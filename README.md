@@ -3,6 +3,7 @@ title: StockBlog
 author:  
 - MIGNE Matthieu
 - SORIA-RAMOS Gabriel
+- EL AHMAR Anas
 --- 
 
 ## Cahier des charges

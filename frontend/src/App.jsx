@@ -6,6 +6,7 @@ import HomePage from "./pages/HomePage";
 import LoginPage from "./pages/LoginPage";
 import NoPage from "./pages/NoPage";
 import SignUpPage from "./pages/SignUpPage";
+import UserSettings from "./pages/UserSettingsPage";
 
 function App() {
   return (
@@ -15,6 +16,7 @@ function App() {
           <Route path="/" element={<HomePage />} />
           <Route path="/login" element={<LoginPage />} />
           <Route path="/sign-up" element={<SignUpPage />} />
+          <Route path="/user-settings" element={<UserSettings />} />
           <Route path="*" element={<NoPage />} />
         </Routes>
       </Router>

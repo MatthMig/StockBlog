@@ -134,3 +134,22 @@ export async function postAuthSignup(email, password, name) {
     });
     return await response.json();
 }
+
+export async function updateUser(email, name, password) {
+    const token = localStorage.getItem('token');
+    const response = await fetch(`${BASE_URL}/users/${encodeURIComponent(email)}`, {
+        method: 'PUT',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({ name, password }),
+    });
+
+    if (!response.ok) {
+        const responseData = await response.json();
+        throw new Error(responseData.message);
+    }
+
+    return await response.json();
+}
