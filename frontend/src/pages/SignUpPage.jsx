@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { Button, Col, Container, Form, Row } from 'react-bootstrap';
 import { WarningModal } from '../components/Modals';
-import { postAuthSignup } from '../components/api';
+import { postAuthLogin, postAuthSignup } from '../components/api';
+import { setTokens } from '../components/auth';
 
 function SignUpPage() {
     const [email, setEmail] = useState('');
@@ -16,7 +17,11 @@ function SignUpPage() {
         const data = await postAuthSignup(email, password, name);
 
         if (data.status) {
-            window.location.href = '/login'
+            // Connect the user directly if signup is successfull
+            const dataLogin = await postAuthLogin(email, password);   
+            dataLogin.email = email;         
+            setTokens(dataLogin);
+            window.location.href = '/'
         } else if (data.error == 'Weak password!') {
             setModalMessage('Weak password! Password must contain at least 8 characters, one uppercase letter, one lowercase letter, one number, and one special character.');
             setShowModal(true);
@@ -51,7 +56,7 @@ function SignUpPage() {
                             <Form.Label>Password</Form.Label>
                             <Form.Control type="password" placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)} />
                         </Form.Group>
-
+                        <br/>
                         <Button variant="primary" type="submit">
                             Sign Up
                         </Button>

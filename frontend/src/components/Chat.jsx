@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { Button, Col, Row, Spinner } from "react-bootstrap";
 import { UserDetailsModal, WarningModal } from "./Modals";
 import { deleteMessage, fetchMessages, fetchUserDetails, postMessage } from "./api";
+import { getTokens } from "./auth";
 
 export default function Chat({ asset }) {
     const [messages, setMessages] = useState([]);
@@ -13,7 +14,6 @@ export default function Chat({ asset }) {
     const chatWindowRef = useRef(null);
 
     const updateMessages = () => {
-        setIsLoading(true);
         fetchMessages(asset)
             .then(newMessages => {
                 const updatedMessages = newMessages.map(message => ({
@@ -27,7 +27,6 @@ export default function Chat({ asset }) {
             })
             .catch(error => {
                 console.error("Error fetching messages:", error);
-                setIsLoading(false);
             });
     }
 
@@ -38,11 +37,11 @@ export default function Chat({ asset }) {
             const intervalId = setInterval(updateMessages, 1000);
             // Clean up the interval on component unmount
             return () => clearInterval(intervalId);
-            */
+            */           
+            setIsLoading(true);
             updateMessages();
-        } else {
-            setIsLoading(false);
         }
+        setIsLoading(false);
     }, [asset]); // Run this effect when the symbol changes
 
     useEffect(() => {
@@ -52,7 +51,7 @@ export default function Chat({ asset }) {
 
     const sendMessage = () => {
         if (messageInput.trim() !== "") {
-            const token = localStorage.getItem('token');
+            const token = getTokens().token;
             if (token === null) {
                 setShowWarningModal(true);
                 return;
@@ -62,7 +61,7 @@ export default function Chat({ asset }) {
             postMessage(asset, newMessage)
                 .then(() => {
                     // Update the messages state with the new message locally only if no error occurred
-                    const localMessage = { content: newMessage.text, username: localStorage.getItem('username') }
+                    const localMessage = { content: newMessage.text, username: getTokens().name }
                     setMessages(prevMessages => [...prevMessages, localMessage]);
                     updateMessages();
                 })
@@ -88,7 +87,7 @@ export default function Chat({ asset }) {
     };
 
     const handleKeyPress = (e) => {
-        if (e.key === "Enter") {
+        if (asset && e.key === "Enter") {
             sendMessage();
         }
     };
@@ -109,7 +108,7 @@ export default function Chat({ asset }) {
         }
     };
 
-    const userRole = localStorage.getItem('role');
+    const userRole = getTokens().role;
 
     return (
         <Row className="chat-box">

@@ -2,37 +2,69 @@ import React, { useEffect, useState } from 'react';
 import { Button, Col, Container, Form, Row } from 'react-bootstrap';
 import { useNavigate } from "react-router-dom";
 import { ConfirmPasswordModal } from '../components/Modals';
-import { postAuthLogin, updateUser } from '../components/api';
+import { deleteMessage, deleteUser, fetchUserMessages, postAuthLogin, updateUser } from '../components/api';
+import { getTokens, removeTokens, setTokens } from '../components/auth';
 
 const UserSettings = () => {
     const [newUsername, setNewUsername] = useState('');
     const [newPassword, setNewPassword] = useState('');
     const [showConfirmModal, setShowConfirmModal] = useState(false);
     const [confirmModalErrorMessage, setConfirmModalErrorMessage] = useState('');
+    const [postConfirmAction, setPostConfirmAction] = useState(null);
     const [errorMessage, setErrorMessage] = useState('');
     const [isLoading, setIsLoading] = useState(true);
+    const [userMessages, setUserMessages] = useState([]);
     const navigate = useNavigate()
+
+    const fetchMessagesHistory = async () => {
+        setIsLoading(true);
+        const email = getTokens().email;
+        try {
+            const messages = (await fetchUserMessages(email)).user_messages;
+            setUserMessages(messages);
+        } catch (error) {
+            console.error('Failed to fetch user messages:', error);
+        }
+        setIsLoading(false);
+    };
 
     useEffect(() => {
         // Check if user is logged in
-        const token = localStorage.getItem('token');
+        const token = getTokens().token;
         if (!token) {
             // Redirect to login page if not
             navigate("/login");
         } else {
             // Fetch current username from local storage
-            setNewUsername(localStorage.getItem('username'));
+            setNewUsername(getTokens().username);
         }
+        fetchMessagesHistory();
     }, [navigate]);
 
-    const handleSaveUsername = () => {
+    const handleSaveUsername = async () => {
         if (!newUsername) {
             setErrorMessage('Username cannot be empty.');
             return;
         }
         setShowConfirmModal(true);
-        setNewUsername(newUsername);
-        localStorage.setItem('username', newUsername);
+        setPostConfirmAction(() => async () => {
+            setNewUsername(newUsername);
+            setIsLoading(true);
+            try {
+                await updateUser(getTokens().email, newUsername, null);
+            } catch (error) {
+                if (error.message === 'Validation error: Validation is on name failed') {
+                    setErrorMessage('Invalid username.');                
+                } else {
+                    setErrorMessage('An error occurred while updating your information.');
+                }
+                setShowConfirmModal(false);
+                return;
+            }
+            setIsLoading(false);
+            setTokens({ name: newUsername });
+            navigate('/');
+        });
     };
 
     const handleSavePassword = () => {
@@ -41,40 +73,56 @@ const UserSettings = () => {
             return;
         }
         setShowConfirmModal(true);
-        setNewPassword(newPassword);
+        setPostConfirmAction(() => async () => {
+            setNewPassword(newPassword);
+            setIsLoading(true);
+            try {
+                await updateUser(getTokens().email, null, newPassword);
+            } catch (error) {
+                if (error.message === 'Weak password!') {
+                    setErrorMessage('Your password is too weak. Please use a stronger password.');                
+                } else {
+                    setErrorMessage('An error occurred while updating your information.');
+                }
+                setShowConfirmModal(false);
+                return;
+            }
+            setIsLoading(false);
+            navigate('/');
+        });
+    };
+
+    const handleUserAccountDeletion = () => {
+        setShowConfirmModal(true);
+        setPostConfirmAction(() => async () => {
+            try {
+                deleteUser(getTokens().email);
+                removeTokens();
+                navigate('/');
+            } catch(error) {
+                setErrorMessage('An error occurred while deleting your account.');
+            }
+        });
     };
 
     const handleConfirm = async (enteredPassword) => {
-        const email = localStorage.getItem('email');
+        const email = getTokens().email;
         try {
             const response = await postAuthLogin(email, enteredPassword);
             if (response.token) {
-                // The password is correct, you can save the changes
-                const email = localStorage.getItem('email');
                 try {
-                    setIsLoading(true);
-                    await updateUser(email, newUsername, newPassword);
-                    setIsLoading(false);
-                    setShowConfirmModal(false);
-                    navigate('/');
+                    postConfirmAction && (await postConfirmAction());
+                    setPostConfirmAction(null);
                 } catch (error) {
                     setIsLoading(false);
                     setShowConfirmModal(false);
-                    // There was an error updating the user
-                    if (error.message === 'Weak password!') {
-                        // The password is weak, show a warning message
-                        setErrorMessage('Your password is too weak. Please use a stronger password.');
-                    } else if (error.message === 'Validation error: Validation is on name failed') {
-                        setErrorMessage('Invalid username.');
-                    } else {
-                        // Some other error occurred, show a generic error message
-                        setErrorMessage('An error occurred while updating your information.');
-                    }
+                    setErrorMessage('An error occurred while updating your information.');
                 }
             } else {
                 // The password is incorrect, show an error message
                 setConfirmModalErrorMessage('Incorrect password');
             }
+            setIsLoading(false);
         } catch (error) {
             // There was an error, show an error message
             setErrorMessage('An error occurred while checking the password.');
@@ -106,6 +154,29 @@ const UserSettings = () => {
                         </Col>
                     </Form.Group>
                 </Form>
+                <h3>Your Messages History</h3>
+                <div className="border p-2 mb-2">
+                    {[...userMessages].reverse().map((message, index) => {
+                        const date = new Date(message.createdAt);
+                        const formattedDate = `${date.toLocaleDateString()} ${date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`;
+
+                        return (
+                            <div key={index} className="d-flex justify-content-between align-items-start">
+                                <p>
+                                    <strong>{message.symbol}:</strong> {message.content}
+                                    <br />
+                                    <small>Posted on {formattedDate}</small>
+                                </p>
+                                <Button variant="danger" onClick={() => { deleteMessage(message.id); fetchMessagesHistory(); }}>
+                                    Delete
+                                </Button>
+                            </div>
+                        );
+                    })}
+                </div>
+                <Button variant="danger" onClick={handleUserAccountDeletion}>
+                    Delete your account
+                </Button>
                 <ConfirmPasswordModal show={showConfirmModal} handleClose={() => { setShowConfirmModal(false); setConfirmModalErrorMessage(''); }} handleConfirm={handleConfirm} errorMessage={confirmModalErrorMessage} />
             </Container>
         </div>

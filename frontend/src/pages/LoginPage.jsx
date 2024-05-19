@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Button, Col, Container, Form, Row } from 'react-bootstrap';
 import { WarningModal } from '../components/Modals';
 import { postAuthLogin } from '../components/api';
+import { setTokens } from '../components/auth';
 
 function LoginPage() {
     const [email, setEmail] = useState('');
@@ -15,10 +16,8 @@ function LoginPage() {
         const data = await postAuthLogin(email, password);
     
         if (data && data.token) {
-            localStorage.setItem('token', data.token);
-            localStorage.setItem('username', data.name);
-            localStorage.setItem('email', email);
-            localStorage.setItem('role', data.role);
+            data.email = email
+            setTokens(data);
             window.location.href = '/'; // Redirect to the home page
         } else if (data && data.message === 'Wrong email/password') {
             setModalText('Wrong email/password');
@@ -43,7 +42,7 @@ function LoginPage() {
                             <Form.Label>Password</Form.Label>
                             <Form.Control type="password" placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)} />
                         </Form.Group>
-
+                        <br/>
                         <Button variant="primary" type="submit">
                             Login
                         </Button>

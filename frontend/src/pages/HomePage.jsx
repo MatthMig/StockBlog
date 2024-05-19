@@ -5,6 +5,7 @@ import SearchBar from "../components/SearchBar";
 import StockPrice from "../components/StockPrice";
 import TopBar from "../components/TopBar";
 import { fetchBars, fetchSymbols } from '../components/api';
+import { getTokens } from '../components/auth';
 
 function HomePage() {
     const [symbolsData, setSymbolsData] = useState([]);
@@ -25,11 +26,9 @@ function HomePage() {
         fetchSymbolsData();
     }, []);
 
-    const isLoggedIn = Boolean(localStorage.getItem('token'));
+    const { token, role, username } = getTokens();
 
-    const role = localStorage.getItem('role');
-
-    const username = localStorage.getItem('username');
+    const isLoggedIn = Boolean(token);
 
     const handleAssetSelect = async (asset) => {
         setSelectedAsset(asset);

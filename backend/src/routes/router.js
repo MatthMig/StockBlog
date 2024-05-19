@@ -1,10 +1,8 @@
 const router = require('express').Router();
-const alpacaRouter = require('./alpaca');
-const authRouter = require('./auth');
 
-router.use(require('./user'));
+router.use('/api/users', require('./users'));
 router.use('/api/messages', require('./messages'));
-router.use('/api/alpaca', alpacaRouter);
-router.use('/api/auth', authRouter);
+router.use('/api/alpaca', require('./alpaca'));
+router.use('/api/auth', require('./auth'));
 
 module.exports = router;

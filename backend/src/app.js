@@ -7,10 +7,10 @@ const cookieParser = require('cookie-parser')
 const cors = require('cors')
 const helmet = require('helmet')
 const logger = require('./util/logger')
-const Message = require('./models/Message');
-const User = require('./models/users'); 
+const messages = require('./models/messages');
+const users = require('./models/users'); 
 const messagesRouter = require('./routes/messages');
-const usersRouter = require('./routes/user');
+const usersRouter = require('./routes/users');
 const createInitialAdmin = require('./util/updatedb');
 
 require('./models/associations');
@@ -20,8 +20,8 @@ const app = express()
 
 // Create the database table
 Promise.all([
-  Message.sync(),
-  User.sync()
+  messages.sync(),
+  users.sync()
 ])
   .then(() => {
     console.log(`Database & tables created!`);

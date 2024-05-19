@@ -2,6 +2,7 @@ import React from 'react';
 import { Button } from 'react-bootstrap';
 import { GearFill } from 'react-bootstrap-icons';
 import { useNavigate } from "react-router-dom";
+import { removeTokens } from './auth';
 
 
 const ConnectionSettingsButton = React.memo(({ isLoggedIn, username }) => {
@@ -15,10 +16,7 @@ const ConnectionSettingsButton = React.memo(({ isLoggedIn, username }) => {
     }
 
     function onLogOut() {
-        localStorage.removeItem('token');
-        localStorage.removeItem('username');
-        localStorage.removeItem('email');
-        localStorage.removeItem('role');
+        removeTokens();
         window.location.reload();
     }
 

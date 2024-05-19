@@ -1,5 +1,5 @@
-const User = require('./users');
-const Message = require('./Message');
+const users = require('./users');
+const messages = require('./messages');
 
-User.hasMany(Message, { foreignKey: 'userMail', sourceKey: 'email' });
-Message.belongsTo(User, { foreignKey: 'userMail', targetKey: 'email' });
+users.hasMany(messages, { foreignKey: 'userMail', sourceKey: 'email' });
+messages.belongsTo(users, { foreignKey: 'userMail', targetKey: 'email' });

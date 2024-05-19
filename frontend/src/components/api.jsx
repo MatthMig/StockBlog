@@ -1,3 +1,5 @@
+import { getTokens } from './auth';
+
 const BASE_URL = 'http://localhost:3000/api';
 
 export async function fetchMessages(asset) {
@@ -13,7 +15,7 @@ export async function fetchMessages(asset) {
 
 export async function postMessage(asset, message) {
     // Get the token from local storage
-    const token = localStorage.getItem('token');
+    const token = getTokens().token;
 
     const response = await fetch(`${BASE_URL}/messages/${asset.symbol}`, {
         method: 'POST',
@@ -32,7 +34,7 @@ export async function postMessage(asset, message) {
 }
 
 export async function deleteMessage(id) {
-    const token = localStorage.getItem('token');
+    const token = getTokens().token;
 
     const response = await fetch(`${BASE_URL}/messages/${id}`, {
         method: 'DELETE',
@@ -49,7 +51,7 @@ export async function deleteMessage(id) {
 }
 
 export async function deleteUser(userMail) {
-    const token = localStorage.getItem('token');
+    const token = getTokens().token;
 
     const response = await fetch(`${BASE_URL}/users/${userMail}`, {
         method: 'DELETE',
@@ -71,7 +73,7 @@ export async function fetchUserDetails(userMail) {
         method: 'GET',
         headers: {
             'Content-Type': 'application/json',
-            'Authorization': `Bearer ${localStorage.getItem('token')}`
+            'Authorization': `Bearer ${getTokens().token}`
         }
     });
 
@@ -136,7 +138,7 @@ export async function postAuthSignup(email, password, name) {
 }
 
 export async function updateUser(email, name, password) {
-    const token = localStorage.getItem('token');
+    const token = getTokens().token;
     const response = await fetch(`${BASE_URL}/users/${encodeURIComponent(email)}`, {
         method: 'PUT',
         headers: {
@@ -152,4 +154,25 @@ export async function updateUser(email, name, password) {
     }
 
     return await response.json();
+}
+
+export async function fetchUserMessages(userEmail) {
+    const token = getTokens().token;
+    const encodedUserEmail = encodeURIComponent(userEmail);
+
+    const response = await fetch(`${BASE_URL}/users/${encodedUserEmail}/messages`, {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+        }
+    });
+
+    if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error("Network response was not ok:", errorData);
+    }
+
+    const userMessages = await response.json();
+    return userMessages;
 }
