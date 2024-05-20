@@ -12,7 +12,7 @@ Nous souhaitons créer un site affichant les courbes de différents actifs bousi
 
 Le site comportera 2 vues principales: 
 - la page d'accueil qui a une boîte de sélection pour choisir le graphique à afficher avec les commentaires associés et donne la possibilité d'accéder aux paramètres de son compte
-- la page de ses paramètres de compte
+- la page de ses paramètres de compte pou changer son nom d'utilisateur, son mot de passe, voir l'historique de ses messages, supprimer ses messages ou son compte.
 
 ### Cas d'usage
 
@@ -47,48 +47,6 @@ a --> DAA
 a --> DAC
 a --> cu
 @enduml
-```
-
-### Maquettes
-
-A modifier/compléter...
-
-```plantuml
-@startsalt
-<style>
-header {
-  TextAlignement right
-  BackGroundColor gray
-  FontColor white
-}
-</style>
-header {- Alice@aol.fr | [Se déconnecter] }
-{
-{^Mes groupes
-**Ceux dont je suis membre**
-* Ensimag
-* Grenoble INP
-* <b>Club gaming
-----
-**Ceux que j'administre**
-* Club Gaming
-* Running
-"<i>nom du nouveau groupe" 
- [Créer]
-}|
-{^"Discussion sur le groupe <b>Club Gaming"
-{SI
-  [Salut , ca va? ] | Charlie
-  [Super, et toi?] | Asimov
-  [On se fait un truc] | Asimov
-  [Une idée? ] | Charlie
-  . | [Hello, oui]
-  ----|----
-}
-{+ "Une partie de LOL après?" | [Envoyer ] }
-}
-}
-@endsalt
 ```
 
 ### Captures d'écran
@@ -140,10 +98,15 @@ Indiquer ici l'organisation de votre code. Et les choix faits pour le backend.
 
 Expliquer ici les différents rôles mis en place, et comment ils sont gérés dans votre code.
 
+Il y a 3 rôles: visiteur, utilisateur connecté, et administrateur.
+
 - Coté backend
+
+Le rôle est vérifié à l'aide du token transmis par le client, ensuite nous utilisons une fonction middleware pour vérifier si le token est bien un token utilisateur ou si le token est bien un token administrateur. Certaines fonctionnalités ne sont accessbles que par l'utilisateur concerné ou l'administrateur, dans ces cas-là on va vérifier si l'utilisateur est administrateur, et si non on va vérifier que l'email stocké dans le payload du token transmis par le client correspond bien à l'email de l'utilisateur concerné.
 
 - Coté frontend
 
+Le rôle est stocké en local afin de savoir quelle vue afficher. Il est donc facilement possible d'avoir accès aux vues administrateur pour un utilisateur non autorisé, cependant cela n'est pas problématique, car pour toute action le token est vérifié côté backend donc si un utilisateur non autorisé effectue des appels côté backend pour des fonctionnalités administrateur, il sera interdit en backend.
 
 ## Test
 
