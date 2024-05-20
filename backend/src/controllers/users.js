@@ -53,9 +53,59 @@ async function verifyAdminToken(req, res, next) {
 }
 
 async function login(req, res) {
-  // #swagger.tags = ['Users']
-  // #swagger.summary = 'Verify credentials of user using email and password and return token'
-  // #swagger.parameters['obj'] = { in: 'body', schema: { $email: 'John.Doe@acme.com', $password: '12345'}}
+  //#swagger.tags = ['Users']
+  //#swagger.description = 'Endpoint for user login'
+
+  /* #swagger.path = '/users/login' */
+  /* #swagger.method = 'post' */
+  /* #swagger.parameters['User Login'] = {
+      in: 'body',
+      description: 'Login credentials.',
+      required: true,
+      type: 'object',
+      schema: { 
+        type: 'object',
+        properties: {
+            email: { 
+                type: 'string',
+                description: 'User email'
+            },
+            password: { 
+                type: 'string',
+                description: 'User password'
+            }
+        },
+        required: ['email', 'password']
+      },
+      examples: {
+          'application/json': {
+              email: 'user@example.com',
+              password: 'password123'
+          }
+      }
+  } */
+  /* #swagger.responses[200] = { 
+      description: 'Successful operation', 
+      schema: {
+          type: 'object',
+          properties: {
+              status: { type: 'boolean', description: 'Status of the operation' },
+              message: { type: 'string', description: 'Message about the operation' },
+              token: { type: 'string', description: 'Authentication token' },
+              name: { type: 'string', description: 'Name of the user' },
+              role: { type: 'string', description: 'Role of the user' }
+          }
+      },
+      examples: {
+          'application/json': {
+              status: true,
+              message: 'Login successful',
+              token: 'example_token',
+              name: 'User',
+              role: 'user'
+          }
+      }
+  } */
   if (!has(req.body, ['email', 'password'])) throw new CodeError('You must specify the email and password', status.BAD_REQUEST)
   const { email, password } = req.body
   const user = await userModel.findOne({ where: { email } })
@@ -70,26 +120,70 @@ async function login(req, res) {
 }
 
 async function newUser(req, res) {
-  // #swagger.tags = ['Users']
-  // #swagger.summary = 'New User'
-  // #swagger.parameters['obj'] = { in: 'body', description:'Name and email', schema: { $name: 'John Doe', $email: 'John.Doe@acme.com', $password: '1m02P@SsF0rt!'}}
   if (!has(req.body, ['name', 'email', 'password'])) throw new CodeError('You must specify the name and email', status.BAD_REQUEST)
   const { name, email, password } = req.body
   if (!validPassword(password)) throw new CodeError('Weak password!', status.BAD_REQUEST)
   await userModel.create({ name, email, passhash: await bcrypt.hash(password, 2) })
-  res.json({ status: true, message: 'User Added' })  
+  res.json({ status: true, message: 'User Added' })
 }
 
 async function getUsers(req, res) {
-  // #swagger.tags = ['Users']
-  // #swagger.summary = 'Get All users'
+  //#swagger.tags = ['Users']
+  //#swagger.description = 'Endpoint to get all users'
+
+  /* #swagger.path = '/users' */
+  /* #swagger.method = 'get' */
+  /* #swagger.responses[200] = { 
+      description: 'Successful operation', 
+      schema: {
+          type: 'array',
+          items: {
+              type: 'object',
+              properties: {
+                  name: { type: 'string', description: 'User name' },
+                  email: { type: 'string', description: 'User email' },
+                  role: { type: 'string', description: 'User role' }
+              }
+          }
+      }
+  } */
   const data = await userModel.findAll({ attributes: ['name', 'email', 'role'] })
   res.json({ status: true, message: 'Returning users', data })
 }
 
 async function getUser(req, res) {
-  // #swagger.tags = ['Users']
-  // #swagger.summary = 'Get User by email'
+  //#swagger.tags = ['Users']
+  //#swagger.description = 'Endpoint to get a specific user'
+
+  /* #swagger.path = '/users/{email}' */
+  /* #swagger.method = 'get' */
+  /* #swagger.parameters['email'] = {
+      in: 'path',
+      description: 'Email of the user to retrieve.',
+      required: true,
+      type: 'string'
+  } */
+  /* #swagger.responses[200] = { 
+      description: 'Successful operation', 
+      schema: {
+          type: 'object',
+          properties: {
+              name: { type: 'string', description: 'User name' },
+              email: { type: 'string', description: 'User email' },
+              role: { type: 'string', description: 'User role' }
+          }
+      }
+  } */
+  /* #swagger.responses[404] = { 
+      description: 'User not found', 
+      schema: {
+          type: 'object',
+          properties: {
+              status: { type: 'boolean', description: 'Status of the operation' },
+              message: { type: 'string', description: 'Message about the operation' }
+          }
+      }
+  } */
   decoded_email = decodeURIComponent(req.params.email)
   const user = await userModel.findOne({ where: { email: decoded_email } });
   if (user) {
@@ -100,6 +194,51 @@ async function getUser(req, res) {
 }
 
 async function updateUser(req, res) {
+  //#swagger.tags = ['Users']
+  //#swagger.description = 'Endpoint to update a specific user'
+
+  /* #swagger.path = '/users/{email}' */
+  /* #swagger.method = 'put' */
+  /* #swagger.parameters['email'] = {
+      in: 'path',
+      description: 'Email of the user to update.',
+      required: true,
+      type: 'string'
+  } */
+  /* #swagger.parameters['User'] = {
+      in: 'body',
+      description: 'Information for the user to update.',
+      required: true,
+      type: 'object',
+      schema: { 
+        type: 'object',
+        properties: {
+            name: { 
+                type: 'string',
+                description: 'User name'
+            },
+            password: { 
+                type: 'string',
+                description: 'User password'
+            },
+            role: { 
+                type: 'string',
+                description: 'User role'
+            }
+        },
+        required: ['name', 'password', 'role']
+      }
+  } */
+  /* #swagger.responses[200] = { 
+      description: 'Successful operation', 
+      schema: {
+          type: 'object',
+          properties: {
+              status: { type: 'boolean', description: 'Status of the operation' },
+              message: { type: 'string', description: 'Message about the operation' }
+          }
+      }
+  } */
   const userModified = {}
   for (const field of ['name', 'password']) {
     if (req.body.hasOwnProperty(field)) {
@@ -136,8 +275,37 @@ async function updateUser(req, res) {
 }
 
 async function deleteUser(req, res) {
-  // #swagger.tags = ['Users']
-  // #swagger.summary = 'Delete User'
+  //#swagger.tags = ['Users']
+  //#swagger.description = 'Endpoint to delete a specific user'
+
+  /* #swagger.path = '/users/{email}' */
+  /* #swagger.method = 'delete' */
+  /* #swagger.parameters['email'] = {
+      in: 'path',
+      description: 'Email of the user to delete.',
+      required: true,
+      type: 'string'
+  } */
+  /* #swagger.responses[200] = { 
+      description: 'Successful operation', 
+      schema: {
+          type: 'object',
+          properties: {
+              status: { type: 'boolean', description: 'Status of the operation' },
+              message: { type: 'string', description: 'Message about the operation' }
+          }
+      }
+  } */
+  /* #swagger.responses[404] = { 
+      description: 'User not found', 
+      schema: {
+          type: 'object',
+          properties: {
+              status: { type: 'boolean', description: 'Status of the operation' },
+              message: { type: 'string', description: 'Message about the operation' }
+          }
+      }
+  } */
   if (!req.params.hasOwnProperty('email')) throw new CodeError('You must specify the email', status.BAD_REQUEST)
   decoded_email = decodeURIComponent(req.params.email)
 
@@ -149,14 +317,46 @@ async function deleteUser(req, res) {
   if (req.user.email !== user.email && req.user.role !== 'admin') {
     return res.status(403).json({ status: false, message: 'Access denied' });
   }
-  
+
   await userModel.destroy({ where: { email: decoded_email } })
   res.json({ status: true, message: 'User deleted' })
 }
 
 async function getUserMessages(req, res) {
-  // #swagger.tags = ['Users']
-  // #swagger.summary = 'Get User Messages'
+  //#swagger.tags = ['Users']
+  //#swagger.description = 'Endpoint to get messages of a specific user'
+
+  /* #swagger.path = '/users/{email}/messages' */
+  /* #swagger.method = 'get' */
+  /* #swagger.parameters['email'] = {
+      in: 'path',
+      description: 'Email of the user to retrieve messages.',
+      required: true,
+      type: 'string'
+  } */
+  /* #swagger.responses[200] = { 
+      description: 'Successful operation', 
+      schema: {
+          type: 'array',
+          items: {
+              type: 'object',
+              properties: {
+                  message: { type: 'string', description: 'User message' },
+                  timestamp: { type: 'string', description: 'Message timestamp' }
+              }
+          }
+      }
+  } */
+  /* #swagger.responses[404] = { 
+      description: 'User not found', 
+      schema: {
+          type: 'object',
+          properties: {
+              status: { type: 'boolean', description: 'Status of the operation' },
+              message: { type: 'string', description: 'Message about the operation' }
+          }
+      }
+  } */
   if (!req.params.hasOwnProperty('email')) throw new CodeError('You must specify the email', status.BAD_REQUEST)
   const decoded_email = decodeURIComponent(req.params.email)
 

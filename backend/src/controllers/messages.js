@@ -18,6 +18,38 @@ async function fetchMessagesFromDatabase(symbol) {
 }
 
 async function getMessages(req, res) {
+    //#swagger.tags = ['Messages']
+    //#swagger.description = 'Endpoint to get messages for a specific symbol'
+    /* #swagger.path = '/:symbol' */
+    /* #swagger.parameters['symbol'] = {
+        in: 'path',
+        description: 'Symbol to fetch messages for.',
+        required: true,
+        type: 'string'
+    } */
+    /* #swagger.responses[200] = { 
+        description: 'Successful operation', 
+        schema: {
+            type: 'array',
+            items: {
+                type: 'object',
+                properties: {
+                    symbol: { type: 'string', description: 'Symbol of the message' },
+                    content: { type: 'string', description: 'Content of the message' },
+                    userMail: { type: 'string', description: 'Email of the user who posted the message' }
+                }
+            }
+        }
+    } */
+    /* #swagger.responses[404] = { 
+        description: 'Messages not found', 
+        schema: {
+            type: 'object',
+            properties: {
+                error: { type: 'string', description: 'Error message' }
+            }
+        }
+    } */
     const symbol = req.params.symbol;
     const messages_data = await fetchMessagesFromDatabase(symbol);
     if (!messages_data) {
@@ -28,6 +60,59 @@ async function getMessages(req, res) {
 }
 
 async function postMessage(req, res) {
+    //#swagger.tags = ['Messages']
+    //#swagger.description = 'Endpoint to post a new message for a specific symbol'
+    /* #swagger.path = '/:symbol' */
+    /* #swagger.parameters['New Message'] = {
+        in: 'body',
+        description: 'Information for the new message.',
+        required: true,
+        type: 'object',
+        schema: { 
+          type: 'object',
+          properties: {
+              text: { 
+                  type: 'string',
+                  description: 'Message text'
+              }
+          },
+          required: ['text']
+        },
+        examples: {
+            'application/json': {
+                text: 'This is a new message'
+            }
+        }
+    } */
+    /* #swagger.responses[200] = { 
+        description: 'Successful operation', 
+        schema: {
+            type: 'object',
+            properties: {
+                symbol: { type: 'string', description: 'Symbol of the message' },
+                content: { type: 'string', description: 'Content of the message' },
+                userMail: { type: 'string', description: 'Email of the user who posted the message' }
+            }
+        }
+    } */
+    /* #swagger.responses[400] = { 
+        description: 'Missing required fields', 
+        schema: {
+            type: 'object',
+            properties: {
+                error: { type: 'string', description: 'Error message' }
+            }
+        }
+    } */
+    /* #swagger.responses[500] = { 
+        description: 'Error creating message', 
+        schema: {
+            type: 'object',
+            properties: {
+                error: { type: 'string', description: 'Error message' }
+            }
+        }
+    } */
     const symbol = req.params.symbol;
     const message = req.body;
 
@@ -78,6 +163,42 @@ async function postMessage(req, res) {
 }
 
 async function deleteMessage(req, res) {
+    //#swagger.tags = ['Messages']
+    //#swagger.description = 'Endpoint to delete a message by id'
+    /* #swagger.path = '/:id' */
+    /* #swagger.parameters['id'] = {
+        in: 'path',
+        description: 'ID of the message to delete.',
+        required: true,
+        type: 'integer'
+    } */
+    /* #swagger.responses[200] = { 
+        description: 'Successful operation', 
+        schema: {
+            type: 'object',
+            properties: {
+                success: { type: 'boolean', description: 'Status of the operation' }
+            }
+        }
+    } */
+    /* #swagger.responses[404] = { 
+        description: 'Message not found', 
+        schema: {
+            type: 'object',
+            properties: {
+                error: { type: 'string', description: 'Error message' }
+            }
+        }
+    } */
+    /* #swagger.responses[500] = { 
+        description: 'Error deleting message', 
+        schema: {
+            type: 'object',
+            properties: {
+                error: { type: 'string', description: 'Error message' }
+            }
+        }
+    } */
     const id = req.params.id;
 
     const authHeader = req.headers.authorization;
@@ -99,7 +220,7 @@ async function deleteMessage(req, res) {
 
     const user = await users.findOne({ where: { email: email } });
 
-    if (!user ) {
+    if (!user) {
         res.status(403).json({ error: 'User not authorized' });
         return;
     }

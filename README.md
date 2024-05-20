@@ -57,7 +57,7 @@ A compléter
 
 Donner le lien vers la documentation swagger et/ou faire un tableau récapitulant l'API
 
-A compléter
+[Swagger doc](http://localhost:3000/doc/)
 
 ## Architecture du code
 

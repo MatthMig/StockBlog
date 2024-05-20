@@ -14,7 +14,6 @@ const Message = db.define('message', {
         type: Sequelize.STRING,
         allowNull: false
     }
-    // Add other fields as necessary
 });
 
 module.exports = Message;
