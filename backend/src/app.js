@@ -7,13 +7,13 @@ const cookieParser = require('cookie-parser')
 const cors = require('cors')
 const helmet = require('helmet')
 const logger = require('./util/logger')
-const messages = require('./models/messages');
-const users = require('./models/users'); 
-const messagesRouter = require('./routes/messages');
-const usersRouter = require('./routes/users');
-const createInitialAdmin = require('./util/updatedb');
+const messages = require('./models/messages')
+const users = require('./models/users')
+const messagesRouter = require('./routes/messages')
+const usersRouter = require('./routes/users')
+const createInitialAdmin = require('./util/updatedb')
 
-require('./models/associations');
+require('./models/associations')
 
 // Instantiate an Express Application
 const app = express()
@@ -24,14 +24,14 @@ Promise.all([
   users.sync()
 ])
   .then(() => {
-    console.log(`Database & tables created!`);
+    console.log('Database & tables created!')
 
-    createInitialAdmin();
+    createInitialAdmin()
 
     // Set up your routes after the tables are created
-    app.use('/messages', messagesRouter);
-    app.use('/users', usersRouter);
-  });
+    app.use('/messages', messagesRouter)
+    app.use('/users', usersRouter)
+  })
 
 // Configure Express App Instance
 app.use(express.json({ limit: '50mb' }))

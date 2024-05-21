@@ -1,16 +1,16 @@
-const router = require('express').Router();
-const { fetchData_bars, fetchData_symbols } = require('../controllers/alpaca'); // Import your Alpaca API functions
+const router = require('express').Router()
+const { fetchDataBars, fetchDataSymbols } = require('../controllers/alpaca') // Import your Alpaca API functions
 
 router.get('/bars/:asset_class/:symbol/:start/:end/:timeframe', async (req, res) => {
-    //#swagger.tags = ['Alpaca extern api']
-    //#swagger.description = 'Fetch bars data for a given symbol'
-    //#swagger.parameters['asset_class'] = { description: 'Asset class (crypto or stocks).', required: true, type: 'string', example: 'stocks' }
-    //#swagger.parameters['symbol'] = { description: 'Symbol to fetch data for.', required: true, type: 'string', example: 'AAPL' }
-    //#swagger.parameters['start'] = { description: 'Start date/time.', required: true, type: 'string', example: '2022-01-01T00:00:00Z' }
-    //#swagger.parameters['end'] = { description: 'End date/time.', required: true, type: 'string', example: '2022-12-31T23:59:59Z' }
-    //#swagger.parameters['timeframe'] = { description: 'Timeframe for the data.', required: true, type: 'string', example: '1D' }
-    /*#swagger.responses[200] = { 
-        description: 'Successful operation', 
+  // #swagger.tags = ['Alpaca extern api']
+  // #swagger.description = 'Fetch bars data for a given symbol'
+  // #swagger.parameters['asset_class'] = { description: 'Asset class (crypto or stocks).', required: true, type: 'string', example: 'stocks' }
+  // #swagger.parameters['symbol'] = { description: 'Symbol to fetch data for.', required: true, type: 'string', example: 'AAPL' }
+  // #swagger.parameters['start'] = { description: 'Start date/time.', required: true, type: 'string', example: '2022-01-01T00:00:00Z' }
+  // #swagger.parameters['end'] = { description: 'End date/time.', required: true, type: 'string', example: '2022-12-31T23:59:59Z' }
+  // #swagger.parameters['timeframe'] = { description: 'Timeframe for the data.', required: true, type: 'string', example: '1D' }
+  /* #swagger.responses[200] = {
+        description: 'Successful operation',
         schema: {
             type: 'object',
             additionalProperties: {
@@ -47,16 +47,16 @@ router.get('/bars/:asset_class/:symbol/:start/:end/:timeframe', async (req, res)
             }
         }
     } */
-    const { asset_class, symbol, start, end, timeframe } = req.params;
-    const data = await fetchData_bars(asset_class, symbol, start, end, timeframe, process.env.ALPACA_KEY_ID, process.env.ALPACA_SECRET_KEY);
-    res.json(data);
-});
+  const { asset_class: assetClass, symbol, start, end, timeframe } = req.params
+  const data = await fetchDataBars(assetClass, symbol, start, end, timeframe, process.env.ALPACA_KEY_ID, process.env.ALPACA_SECRET_KEY)
+  res.json(data)
+})
 
 router.get('/symbols', async (req, res) => {
-    //#swagger.tags = ['Alpaca extern api']
-    //#swagger.description = 'Fetch symbols data'
-    /*#swagger.responses[200] = { 
-        description: 'Successful operation', 
+  // #swagger.tags = ['Alpaca extern api']
+  // #swagger.description = 'Fetch symbols data'
+  /* #swagger.responses[200] = {
+        description: 'Successful operation',
         schema: {
             type: 'array',
             items: {
@@ -83,8 +83,8 @@ router.get('/symbols', async (req, res) => {
             ]
         }
     } */
-    const data = await fetchData_symbols(process.env.ALPACA_KEY_ID, process.env.ALPACA_SECRET_KEY);
-    res.json(data);
-});
+  const data = await fetchDataSymbols(process.env.ALPACA_KEY_ID, process.env.ALPACA_SECRET_KEY)
+  res.json(data)
+})
 
-module.exports = router;
+module.exports = router

@@ -1,8 +1,8 @@
-const User = require('./users');
+const User = require('./users')
 
-async function signup(req, res) {
-  //#swagger.tags = ['Authentication']
-  //#swagger.description = 'Endpoints for user authentication'
+async function signup (req, res) {
+  // #swagger.tags = ['Authentication']
+  // #swagger.description = 'Endpoints for user authentication'
 
   /* #swagger.path = '/signup' */
   /* #swagger.parameters['New User'] = {
@@ -10,18 +10,18 @@ async function signup(req, res) {
       description: 'Information for the new user.',
       required: true,
       type: 'object',
-      schema: { 
+      schema: {
         type: 'object',
         properties: {
-            email: { 
+            email: {
                 type: 'string',
                 description: 'User email'
             },
-            password: { 
+            password: {
                 type: 'string',
                 description: 'User password'
             },
-            name: { 
+            name: {
                 type: 'string',
                 description: 'User name'
             }
@@ -36,8 +36,8 @@ async function signup(req, res) {
           }
       }
   } */
-  /* #swagger.responses[200] = { 
-      description: 'Successful operation', 
+  /* #swagger.responses[200] = {
+      description: 'Successful operation',
       schema: {
           type: 'object',
           properties: {
@@ -52,8 +52,8 @@ async function signup(req, res) {
           }
       }
   } */
-  /* #swagger.responses[400] = { 
-      description: 'Bad Request', 
+  /* #swagger.responses[400] = {
+      description: 'Bad Request',
       schema: {
           type: 'object',
           properties: {
@@ -61,8 +61,8 @@ async function signup(req, res) {
           }
       }
   } */
-  /* #swagger.responses[500] = { 
-      description: 'Internal Server Error', 
+  /* #swagger.responses[500] = {
+      description: 'Internal Server Error',
       schema: {
           type: 'object',
           properties: {
@@ -71,7 +71,7 @@ async function signup(req, res) {
       }
   } */
 
-  /* #swagger.definitions['NewUser'] = { 
+  /* #swagger.definitions['NewUser'] = {
       type: 'object',
       properties: {
           email: { type: 'string' },
@@ -79,18 +79,18 @@ async function signup(req, res) {
       }
   } */
   try {
-    const userResponse = await User.newUser(req, res);
-    return res.json(userResponse);
+    const userResponse = await User.newUser(req, res)
+    return res.json(userResponse)
   } catch (err) {
     console.log('Error in POST /signup route:', err)
     if (err.name === 'SequelizeUniqueConstraintError') {
-      return res.status(400).json({ error: 'A user with this email already exists.' });
+      return res.status(400).json({ error: 'A user with this email already exists.' })
     }
-    return res.status(500).json({ error: err.message });
+    return res.status(500).json({ error: err.message })
   }
 }
 
-async function login(req, res) {
+async function login (req, res) {
   // #swagger.tags = ['Authentication']
   // #swagger.description = 'Endpoints for user authentication'
 
@@ -100,14 +100,14 @@ async function login(req, res) {
     description: 'Login credentials.',
     required: true,
     type: 'object',
-     schema: { 
+     schema: {
         type: 'object',
         properties: {
-            email: { 
+            email: {
                 type: 'string',
                 description: 'User email'
             },
-            password: { 
+            password: {
                 type: 'string',
                 description: 'User password'
             }
@@ -121,8 +121,8 @@ async function login(req, res) {
         }
     }
 } */
-  /* #swagger.responses[200] = { 
-      description: 'Successful operation', 
+  /* #swagger.responses[200] = {
+      description: 'Successful operation',
       schema: {
           type: 'object',
           properties: {
@@ -134,8 +134,8 @@ async function login(req, res) {
           }
       }
   } */
-  /*swagger.responses[500] = { 
-      description: 'Internal Server Error', 
+  /* swagger.responses[500] = {
+      description: 'Internal Server Error',
       schema: {
           type: 'object',
           properties: {
@@ -144,7 +144,7 @@ async function login(req, res) {
       }
   } */
 
-  /* #swagger.definitions['UserLogin'] = { 
+  /* #swagger.definitions['UserLogin'] = {
       type: 'object',
       properties: {
           email: { type: 'string' },
@@ -152,14 +152,14 @@ async function login(req, res) {
       }
   } */
   try {
-    await User.login(req, res);
+    await User.login(req, res)
   } catch (err) {
     console.log('Error in POST /login route:', err)
-    return res.status(500).json({ error: err.message });
+    return res.status(500).json({ error: err.message })
   }
 }
 
 module.exports = {
   signup,
   login
-};
+}

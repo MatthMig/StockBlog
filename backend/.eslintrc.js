@@ -6,7 +6,7 @@ module.exports = {
   },
   extends: [
     'standard',
-    "plugin:cypress/recommended"
+    'plugin:cypress/recommended'
   ],
   parserOptions: {
     ecmaVersion: 'latest'
