@@ -87,12 +87,13 @@ export async function fetchUserDetails(userMail) {
 }
 
 export async function fetchSymbols() {
+    let response;
     try {
-        const response = await fetch(`${BASE_URL}/alpaca/symbols`);
+        response = await fetch(`${BASE_URL}/alpaca/symbols`);
         const data = await response.json();
         return data;
     } catch (error) {
-        console.error('Error fetching symbols:', error);
+        console.error('Error fetching symbols:', error, response && response.json());
     }
 }
 

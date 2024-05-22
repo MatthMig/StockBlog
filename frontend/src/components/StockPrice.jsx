@@ -1,4 +1,4 @@
-import React from 'react';
+import PropTypes from 'prop-types';
 import { Spinner } from 'react-bootstrap';
 import StockChart from './StockChart';
 
@@ -7,7 +7,7 @@ function StockPrice({ symbol, stockData, error, isLoading }) {
 
   let tValues = [];
   let cValues = [];
-  const data_available = stockData && stockData.hasOwnProperty("bars") && stockData.bars !== null;
+  const data_available = stockData && Object.prototype.hasOwnProperty.call(stockData, "bars") && stockData.bars !== null;
   if (data_available) {
     tValues = stockData.bars.map(bar => bar.t);
     cValues = stockData.bars.map(bar => bar.c);
@@ -30,5 +30,17 @@ function StockPrice({ symbol, stockData, error, isLoading }) {
     </div>
   );
 }
+
+StockPrice.propTypes = {
+  symbol: PropTypes.string.isRequired,
+  stockData: PropTypes.shape({
+    bars: PropTypes.arrayOf(PropTypes.shape({
+      t: PropTypes.number,
+      c: PropTypes.number,
+    })),
+  }),
+  error: PropTypes.string,
+  isLoading: PropTypes.bool,
+};
 
 export default StockPrice;

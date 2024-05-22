@@ -1,4 +1,5 @@
-import React, { useEffect, useRef, useState } from "react";
+import PropTypes from "prop-types";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { Button, Col, Row, Spinner } from "react-bootstrap";
 import { UserDetailsModal, WarningModal } from "./Modals";
 import { deleteMessage, fetchMessages, fetchUserDetails, postMessage } from "./api";
@@ -13,7 +14,7 @@ export default function Chat({ asset }) {
     const [selectedUser, setSelectedUser] = useState(null);
     const chatWindowRef = useRef(null);
 
-    const updateMessages = () => {
+    const updateMessages = useCallback(() => {
         fetchMessages(asset)
             .then(newMessages => {
                 const updatedMessages = newMessages.map(message => ({
@@ -28,7 +29,7 @@ export default function Chat({ asset }) {
             .catch(error => {
                 console.error("Error fetching messages:", error);
             });
-    }
+    }, [asset]);
 
     useEffect(() => {
         if (asset) {
@@ -42,7 +43,7 @@ export default function Chat({ asset }) {
             updateMessages();
         }
         setIsLoading(false);
-    }, [asset]); // Run this effect when the symbol changes
+    }, [asset, updateMessages]);
 
     useEffect(() => {
         // Scroll to the bottom when the chat window or sidebar is displayed
@@ -184,3 +185,7 @@ export default function Chat({ asset }) {
         </Row>
     );
 }
+
+Chat.propTypes = {
+    asset: PropTypes.object,
+};

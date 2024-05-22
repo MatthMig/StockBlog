@@ -1,8 +1,9 @@
-import React, { useState } from 'react';
+import PropTypes from 'prop-types';
+import { useState } from 'react';
 import Dropdown from 'react-bootstrap/Dropdown';
 import Form from 'react-bootstrap/Form';
 
-const SearchBar = ({ onAssetSelect, symbolsData }) => {
+const SearchBar = ({ onAssetSelect, symbolsData = [] }) => {
     const [searchInput, setSearchInput] = useState("");
 
     const handleChange = (e) => {
@@ -43,6 +44,11 @@ const SearchBar = ({ onAssetSelect, symbolsData }) => {
             </Dropdown.Menu>
         </Dropdown>
     );
+};
+
+SearchBar.propTypes = {
+    onAssetSelect: PropTypes.func.isRequired,
+    symbolsData: PropTypes.array,
 };
 
 export default SearchBar;

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { Button, Col, Container, Form, Row } from 'react-bootstrap';
 import { WarningModal } from '../components/Modals';
 import { postAuthLogin, postAuthSignup } from '../components/api';

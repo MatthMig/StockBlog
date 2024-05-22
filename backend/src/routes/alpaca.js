@@ -1,6 +1,11 @@
 const router = require('express').Router()
 const { fetchDataBars, fetchDataSymbols } = require('../controllers/alpaca') // Import your Alpaca API functions
 
+const { ALPACA_KEY_ID, ALPACA_SECRET_KEY } = process.env
+if (!ALPACA_KEY_ID || !ALPACA_SECRET_KEY) {
+  throw new Error('ALPACA_KEY_ID and ALPACA_SECRET_KEY environment variables are required')
+}
+
 router.get('/bars/:asset_class/:symbol/:start/:end/:timeframe', async (req, res) => {
   // #swagger.tags = ['Alpaca extern api']
   // #swagger.description = 'Fetch bars data for a given symbol'
@@ -48,7 +53,7 @@ router.get('/bars/:asset_class/:symbol/:start/:end/:timeframe', async (req, res)
         }
     } */
   const { asset_class: assetClass, symbol, start, end, timeframe } = req.params
-  const data = await fetchDataBars(assetClass, symbol, start, end, timeframe, process.env.ALPACA_KEY_ID, process.env.ALPACA_SECRET_KEY)
+  const data = await fetchDataBars(assetClass, symbol, start, end, timeframe, ALPACA_KEY_ID, ALPACA_SECRET_KEY)
   res.json(data)
 })
 
@@ -83,7 +88,7 @@ router.get('/symbols', async (req, res) => {
             ]
         }
     } */
-  const data = await fetchDataSymbols(process.env.ALPACA_KEY_ID, process.env.ALPACA_SECRET_KEY)
+  const data = await fetchDataSymbols(ALPACA_KEY_ID, ALPACA_SECRET_KEY)
   res.json(data)
 })
 

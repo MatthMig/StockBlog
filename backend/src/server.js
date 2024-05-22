@@ -4,9 +4,12 @@ issu du dépôt
 <https://github.com/ChoqueCastroLD/create-backend/tree/master/src/template/js>
 */
 
-// Load Enviroment Variables to process.env (if not present take variables defined in .env file)
-require('mandatoryenv').load(['PORT'])
+require('dotenv').config()
 const { PORT } = process.env
+
+if (!PORT) {
+  throw new Error('PORT environment variable is required')
+}
 
 // Instantiate an Express Application
 const app = require('./app')
