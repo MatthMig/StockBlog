@@ -57,7 +57,7 @@ A compléter
 
 Donner le lien vers la documentation swagger et/ou faire un tableau récapitulant l'API
 
-[Swagger doc](http://localhost:3000/doc/)
+[Swagger doc](https://stock-blog-backend.osc-fr1.scalingo.io/doc/)
 
 ## Architecture du code
 
@@ -70,24 +70,23 @@ Indiquer ici l'organisation de votre code. Et les choix faits pour le frontend.
 #### Schéma de votre base de donnée
 
 ```plantuml
-class User{
+class users{
   name
   email
   passhash
-  isAdmin : boolean
-  points
+  role
 }
 
-class Comments {
-  content
-}
-
-class StockCurve{
+class messages {
   id
+  symbol
+  content
+  userMail
+  createdAt
+  updatedAt
 }
 
-StockCurve "1" -- "n" Comments
-User "1" --> "n" Comments : posts
+users "1" --> "n" messages : posts
 ```
 
 #### Architecture de votre code
@@ -120,7 +119,12 @@ Décrivez les tests faits au niveau du backend, leur couverture.
 
 ## Intégration + déploiement (/3)
 
-Décrivez ici les éléments mis en place au niveau de l'intégration continue 
+Nous avons déployé deux dépôts sur Scalingo, un pour le frontend et un pour le backend. Le déploiement se fait en utilisant 
+
+```bash
+git remote add scalingo <url>
+git push
+```
 
 ## Installation
 

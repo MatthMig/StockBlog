@@ -10,7 +10,7 @@ import { getTokens } from '../components/auth';
 function HomePage() {
     const [symbolsData, setSymbolsData] = useState([]);
     const [selectedAsset, setSelectedAsset] = useState(null);
-    const [stockData, setStockData] = useState([]);
+    const [stockData, setStockData] = useState(null);
     const [error, setError] = useState(null);
     const [isLoading, setIsLoading] = useState(false);
 

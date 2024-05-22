@@ -52,7 +52,7 @@ function StockChart({ title, timestamps, prices }) {
 
 StockChart.propTypes = {
     title: PropTypes.string.isRequired,
-    timestamps: PropTypes.arrayOf(PropTypes.number).isRequired,
+    timestamps: PropTypes.arrayOf(PropTypes.string).isRequired,
     prices: PropTypes.arrayOf(PropTypes.number).isRequired,
 };
 

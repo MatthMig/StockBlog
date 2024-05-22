@@ -33,12 +33,7 @@ function StockPrice({ symbol, stockData, error, isLoading }) {
 
 StockPrice.propTypes = {
   symbol: PropTypes.string.isRequired,
-  stockData: PropTypes.shape({
-    bars: PropTypes.arrayOf(PropTypes.shape({
-      t: PropTypes.number,
-      c: PropTypes.number,
-    })),
-  }),
+  stockData: PropTypes.object,
   error: PropTypes.string,
   isLoading: PropTypes.bool,
 };
