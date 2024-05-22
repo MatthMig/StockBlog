@@ -14,7 +14,7 @@
     "test": "npm-run-all --parallel test:frontend test:backend",
     "test:frontend": "npm run test -w frontend",
     "test:backend": "npm run test -w backend",
-    "postdeploy": "npm install --prefix frontend && npm install --prefix backend"
+    "postdeploy": "npm install && npm install --prefix frontend && npm install --prefix backend"
   },
   "author": "",
   "license": "ISC",
