@@ -119,13 +119,24 @@ Décrivez les tests faits au niveau du backend, leur couverture.
 
 ## Intégration + déploiement (/3)
 
-Nous avons déployé deux dépôts sur Scalingo, un pour le frontend et un pour le backend. Le déploiement se fait en utilisant 
-
-```bash
-git remote add scalingo <url>
-git push
-```
+Nous avons déployé deux dépôts, un sur Scalingo pour le backend et un autre sur Netlify pour le backend.
 
 ## Installation
 
-Donner les éléments pour installer l'application sur une machine nue à partir de votre dépôt
+Pour installer l'application il faut effectuer dans le terminal à la racine du projet:
+```bash
+npm install
+```
+Un script installera les dépendances pour le backend et le frontend automatiquement.
+
+Ensuite pour lancer l'application en mode développeur il faut exécuter:
+
+```bash
+npm run dev
+```
+
+Ou en mode production:
+
+```bash
+npm run start
+```
