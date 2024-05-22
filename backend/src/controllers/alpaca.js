@@ -58,4 +58,4 @@ async function fetchDataSymbols (apiKeyID, apiSecretKey) {
   }
 }
 
-module.exports = { fetchData_bars: fetchDataBars, fetchData_symbols: fetchDataSymbols }
+module.exports = { fetchDataBars, fetchDataSymbols }

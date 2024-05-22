@@ -1,5 +1,5 @@
 import { CategoryScale, Chart as ChartJS, Legend, LineElement, LinearScale, PointElement, Title, Tooltip } from 'chart.js';
-import React from 'react';
+import PropTypes from 'prop-types';
 import { Line } from 'react-chartjs-2';
 
 ChartJS.register(
@@ -49,5 +49,11 @@ function StockChart({ title, timestamps, prices }) {
         />
     );
 }
+
+StockChart.propTypes = {
+    title: PropTypes.string.isRequired,
+    timestamps: PropTypes.arrayOf(PropTypes.number).isRequired,
+    prices: PropTypes.arrayOf(PropTypes.number).isRequired,
+};
 
 export default StockChart;

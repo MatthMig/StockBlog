@@ -1,4 +1,5 @@
-import { React, useState } from 'react';
+import PropTypes from 'prop-types';
+import { useState } from 'react';
 import { Button, Form, Modal } from 'react-bootstrap';
 import { deleteUser } from './api';
 
@@ -19,6 +20,12 @@ const WarningModal = ({ text, show, handleClose }) => {
         </Modal>
     );
 }
+
+WarningModal.propTypes = {
+    text: PropTypes.string.isRequired,
+    show: PropTypes.bool,
+    handleClose: PropTypes.func.isRequired,
+};
 
 const UserDetailsModal = ({ user, show, handleClose, currentUser }) => {
     if (!user) {
@@ -62,6 +69,13 @@ const UserDetailsModal = ({ user, show, handleClose, currentUser }) => {
     );
 }
 
+UserDetailsModal.propTypes = {
+    user: PropTypes.object,
+    show: PropTypes.bool,
+    handleClose: PropTypes.func.isRequired,
+    currentUser: PropTypes.object,
+};
+
 const ConfirmPasswordModal = ({ show, handleClose, handleConfirm, errorMessage }) => {
     const [password, setPassword] = useState('');
 
@@ -97,6 +111,13 @@ const ConfirmPasswordModal = ({ show, handleClose, handleConfirm, errorMessage }
         </Modal>
     );
 }
+
+ConfirmPasswordModal.propTypes = {
+    show: PropTypes.bool,
+    handleClose: PropTypes.func.isRequired,
+    handleConfirm: PropTypes.func.isRequired,
+    errorMessage: PropTypes.string,
+};
 
 export { ConfirmPasswordModal, UserDetailsModal, WarningModal };
 

@@ -1,7 +1,6 @@
 const messages = require('../models/messages')
 const users = require('../models/users')
 const jws = require('jws')
-require('mandatoryenv').load(['ACCESS_TOKEN_SECRET'])
 
 async function fetchMessagesFromDatabase (symbol) {
   const messagesData = await messages.findAll({

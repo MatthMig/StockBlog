@@ -1,6 +1,8 @@
-// Load Enviroment Variables to process.env (if not present take variables defined in .env file)
-require('mandatoryenv').load(['DB'])
 const { DB } = process.env
+
+if (!DB) {
+  throw new Error('DB environment variable is required')
+}
 
 const Sequelize = require('sequelize')
 const db = new Sequelize({

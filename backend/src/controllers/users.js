@@ -4,9 +4,12 @@ const has = require('has-keys')
 const CodeError = require('../util/CodeError.js')
 const bcrypt = require('bcrypt')
 const jws = require('jws')
-require('mandatoryenv').load(['ACCESS_TOKEN_SECRET'])
-const { ACCESS_TOKEN_SECRET } = process.env
 const messages = require('../models/messages')
+const { ACCESS_TOKEN_SECRET } = process.env
+
+if (!ACCESS_TOKEN_SECRET) {
+  throw new Error('ACCESS_TOKEN_SECRET environment variable is required')
+}
 
 function validPassword (password) {
   return /^(?=.*[\d])(?=.*[A-Z])(?=.*[a-z])(?=.*[!@#$%^&*])[\w!@#$%^&*]{8,}$/.test(password)

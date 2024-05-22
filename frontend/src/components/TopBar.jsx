@@ -1,4 +1,4 @@
-import React from 'react';
+import PropTypes from 'prop-types';
 import { Nav, Navbar } from 'react-bootstrap';
 import '../css/top_bar.css';
 import ConnectionSettingsButton from './ConnectionSettingsButton';
@@ -16,6 +16,12 @@ const TopBar = ({ isLoggedIn, username, role }) => {
                 </Nav>
         </Navbar>
     );
+};
+
+TopBar.propTypes = {
+    isLoggedIn: PropTypes.bool,
+    username: PropTypes.string,
+    role: PropTypes.string,
 };
 
 export default TopBar;
