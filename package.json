@@ -1,7 +1,7 @@
 {
   "name": "stockblog_gabriel_soria_ramos_matthieu_migne",
   "version": "1.0.0",
-  "description": "---\r title: StockBlog \r author:  \r - MIGNE Matthieu\r - SORIA-RAMOS Gabriel\r ---",
+  "description": "---\r title: StockBlog \r author:  \r - MIGNE Matthieu\r - SORIA-RAMOS Gabriel\r - EL AHMAR Anas\r ---",
   "main": "index.js",
   "scripts": {
     "start": "npm-run-all --parallel start:frontend start:backend",
