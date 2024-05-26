@@ -9,8 +9,6 @@ const helmet = require('helmet')
 const logger = require('./util/logger')
 const messages = require('./models/messages')
 const users = require('./models/users')
-const messagesRouter = require('./routes/messages')
-const usersRouter = require('./routes/users')
 const createInitialAdmin = require('./util/updatedb')
 
 require('./models/associations')
@@ -27,10 +25,6 @@ Promise.all([
     console.log('Database & tables created!')
 
     createInitialAdmin()
-
-    // Set up your routes after the tables are created
-    app.use('/messages', messagesRouter)
-    app.use('/users', usersRouter)
   })
 
 // Configure Express App Instance
