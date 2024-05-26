@@ -6,7 +6,7 @@ author:
 - EL AHMAR Anas
 --- 
 
-**The website: [StockBlog](https://stock-blog.netlify.app/)**
+**Notre site: [StockBlog](https://stock-blog.netlify.app/)**
 
 ## Cahier des charges
 
@@ -65,29 +65,49 @@ Donner le lien vers la documentation swagger et/ou faire un tableau récapitulan
 
 ### FrontEnd
 
-Indiquer ici l'organisation de votre code. Et les choix faits pour le frontend.
+```plantuml
+@startuml
 
-#### organisation
+skinparam componentStyle rectangle
 
-Le frontend est divise en 4 dossiers:
+package "Pages" {
+  [HomePage]
+  [LoginPage]
+  [SignUpPage]
+  [UserSettingsPage]
+}
 
- ##### assets 
-  Contient les images utilises par le site.
+package "Components" {
+  [Chat]
+  [SearchBar]
+  [StockPrice]
+  [StockChart]
+  [Topbar]
+  [API]
+  [Auth]
 
- ##### components
-  Contient les blocks ou elements utilises au sein des pages, a l'exeption de deux fichiers api et auth qui gerent respectivement la communication avec le backend pour recuperer les donnes et l'authentification de l'utilisateur.
+  [HomePage] --down[#red,dashed]> [LoginPage] : Si non connecté
+  [HomePage] --down[#red,dashed]> [SignUpPage] : Si non connecté
+  [HomePage] -down[#green,dashed]> [UserSettingsPage] : Si connectés
+  [Chat] -[#blue]> API
+  [API] -[#blue]> Auth
+}
 
- ##### css
-  Contient les fichiers qui decrivent les styles des pages.
+[HomePage] -[#blue]> Components
 
- ##### pages
-  Contient les differentes pages du site.
+[StockPrice] -down[#blue]> [StockChart]
 
-Mis a part ces fichiers il y a App qui contient les differentes routes navigables par l'utilisateur et main qui est le premier fichier execute.
+@enduml
+```
 
 #### Les choix
-  Au noveau des choix il a ete decide que toute lea partie graphique irait sur le frontend comme attendu, l'authentification des utilisateurs par l'intermediaire du backend ce procede et detaille d'avantege dans la partie suivante. De meme concernant l'API alpaca  qui permet de recuperer les donnees des courbes, celle ci necesitant  l'usage d'un token pour recuperer les donnees (ce qui peut entrainer des soucis au niveau de la securite). Il a ete choisi de fgerer cela depuis le backend.
+Nous avons choisi de faire de la HomePage un point central de l'application, effctivement c'est elle qui s'assure que tous les composants se base sur la même liste de symboles et le même symbole actuellement sélectionné.
 
+Tous nos appels API sont faits grâce au module API dans le package Components, la disctinction entre les appels qui correspondent à ceux de l'API interne et à ceux de l'API externe sont entièrement gérés par le backend.
+
+Auth se charge de gérer les token et informations de session dans le stockage local.
+
+Pour le Chat nous voulions un chat interactif en direct, nous avons donc choisi de faire des appels toute les secondes pour le mettre à jour.
 
 ### Backend
 
@@ -115,29 +135,7 @@ users "1" --> "n" messages : posts
 
 #### Architecture de votre code
 
-  Le backend est organise dans les repertoires suivants :
 
-  ###### tests
-    Dossier qui gere les tests
-
-  ###### controllers
-    Fichiers contenant les fonctions qui facilitent la recuperation et insertion des donnees.
-
-  ###### models
-    Les modeles de la base de donnees et des differents tableaux qui sont contenus.
-
-  ###### routes
-    Les liens entres les requetes Api du frontend et les informations recuperes et renvoyees par le backend.
-    Separes poar chaque type de donnee.
-
-  ###### utils
-    Differentes fonctions utiles opour un ou plusieurs fichiers.
-
-app.js et server.js fichiers permettant d'instancier le backend.
-  
-
-
-Indiquer ici l'organisation de votre code. Et les choix faits pour le backend.
 
 ### Gestion des rôles et droits
 
