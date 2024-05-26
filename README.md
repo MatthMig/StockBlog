@@ -8,6 +8,8 @@ author:
 
 **Notre site: [StockBlog](https://stock-blog.netlify.app/)**
 
+**[Vidéo de démonstration](https://drive.google.com/file/d/1_p1LjgRqOQt4vxgPxObOdHXLxyPRJcG-/view?usp=sharing)**
+
 ## Cahier des charges
 
 Nous souhaitons créer un site affichant les courbes de différents actifs bousiers et qui donne la possibilité aux utilisateurs d'interagir à leur sujet en commentant, ou en pariant sur une montée ou une descente de la valeur de l'actif à la prochaine unité de temps. Seul les utilisateurs connectés peuvent commenter. 
