@@ -155,11 +155,15 @@ Le rôle est stocké en local afin de savoir quelle vue afficher. Il est donc fa
 
 ### Backend
 
+Jest
+
 Décrivez les tests faits au niveau du backend, leur couverture.
 
 ### Frontend
 
-Décrivez les tests faits au niveau du backend, leur couverture.
+Cypress
+
+Décrivez les tests faits au niveau du frontend, leur couverture.
 
 ## Intégration + déploiement (/3)
 
