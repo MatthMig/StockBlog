@@ -8,6 +8,8 @@ author:
 
 **Notre site: [StockBlog](https://stock-blog.netlify.app/)**
 
+**[Vidéo de démonstration](https://drive.google.com/file/d/1_p1LjgRqOQt4vxgPxObOdHXLxyPRJcG-/view?usp=sharing)**
+
 ## Cahier des charges
 
 Nous souhaitons créer un site affichant les courbes de différents actifs bousiers et qui donne la possibilité aux utilisateurs d'interagir à leur sujet en commentant, ou en pariant sur une montée ou une descente de la valeur de l'actif à la prochaine unité de temps. Seul les utilisateurs connectés peuvent commenter. 
@@ -53,7 +55,16 @@ a --> cu
 
 ### Captures d'écran
 
-A compléter
+![non admin home screenshot](screenshots/non_admin_home.png)
+![admin home screenshot](screenshots/admin_home.png)
+
+![user details screenshot](screenshots/user_details.png)
+![admin user details screenshot](screenshots/admin_user_details.png)
+
+![login page](screenshots/login_page.png)
+![signup page](screenshots/signup_page.png)
+
+![user settings screenshot](screenshots/user_settings.png)
 
 ### API mise en place
 
@@ -107,7 +118,7 @@ Tous nos appels API sont faits grâce au module API dans le package Components, 
 
 Auth se charge de gérer les token et informations de session dans le stockage local.
 
-Pour le Chat nous voulions un chat interactif en direct, nous avons donc choisi de faire des appels toute les secondes pour le mettre à jour.
+Pour le Chat nous voulions un chat interactif en direct, nous avons donc choisi de faire des appels toute les secondes pour le mettre à jour. nous avons asscoié un chat pour chaque symbole.
 
 ### Backend
 
@@ -135,7 +146,50 @@ users "1" --> "n" messages : posts
 
 #### Architecture de votre code
 
+```plantuml
+@startuml
+skinparam componentStyle rectangle
+left to right direction
 
+package "Models" {
+    [MessagesModel]
+    [UsersModel]
+    [DatabaseModel]
+}
+
+package "Controllers" {
+    [AlpacaController]
+    [AuthController]
+    [MessagesController]
+    [UsersController]
+
+    [UsersController] --> [UsersModel]
+    [MessagesController] --> [MessagesModel]
+}
+
+package "Routes" {
+    [MainRouter] --> [AlpacaRouter]
+    [MainRouter] --> [AuthRouter]
+    [MainRouter] --> [MessagesRouter]
+    [MainRouter] --> [UsersRouter]
+    
+    [AlpacaRouter] --> [AlpacaController]
+    [AuthRouter] --> [AuthController]
+    [MessagesRouter] --> [MessagesController]
+    [UsersRouter] --> [UsersController]
+}
+
+package "Util" {
+    [UpdateDB]
+}
+
+[App] --> [UpdateDB] : instantiates the database
+[UpdateDB] --> [DatabaseModel]
+
+@enduml
+```
+
+La base de données est créée et initialisée avec l'adiministarteur initial à partir de app à l'instanciation du serveur. Lors d'un appel d'une méthode du backend, le routeur dirige vers le controlleur correspondant qui va ensuite traiter la requête et retourner la réponse. Alpaca est le contrôleur en charge de l'API externe qui nous fournit les données des courbes et les symboles. Pour le ssymboles nous avons décider d'en sélectionner 10 à afficher bien qu'il aurait été possible de faire beacoup plus, mais nous avons fait ce choix afin que chque chat soit plus centralisé du fait de notre nombre d'utilisateurs très réduit.
 
 ### Gestion des rôles et droits
 
